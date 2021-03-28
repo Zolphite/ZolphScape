@@ -8,7 +8,7 @@
                 <div class="col-lg-7 text-center register-side">
                     <h1 class="">Register</h1>
                     <div class="border-top border-warning w-50 my-2 mx-auto"></div>
-                    <h3>Welcom to our network</h3>
+                    <h3>Welcome to our network</h3>
                     <form class="register-form-actual" @submit.prevent="RegisterNewUser">
                         <div class="register-form-group">
                             <label for="register-email" class="w-100">Email</label>
@@ -27,7 +27,7 @@
                         </div>
                         <p>
                             Already have an account? 
-                            <a href="#">Login Here</a>
+                            <a href="/login">Login Here</a>
                         </p>
                     </form>
                 </div>
@@ -40,6 +40,7 @@
 import firebase from '../utilities/firebase'
 
 export default {
+    props:['is_signed_in','authUser'],
     data() {
         return {
             register_form: {

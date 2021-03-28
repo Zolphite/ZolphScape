@@ -4,7 +4,7 @@
         <div class="border-top border-warning w-50 mx-auto my-3">
 
         </div>
-        <h3 class="explore-about text-center">Find data that moves you. Like cards you enjoy, Follow cards you love.</h3>
+        <h3 class="explore-about text-center">Find data that moves you. Like cards you enjoy. Follow cards you love.</h3>
     </div>
     <div class="content-section">
         <div class="content-card" v-for="(item, index) in card_data"  v-bind:key="item">
@@ -15,10 +15,12 @@
                 <label class="content-card-title">{{ item.title }}</label>
                 <!-- <label class="content-card-followed">Linked: 0</label> -->
             </div>
-            <div class="content-card-delete" @click="deleteCardData(index)"><i class="far fa-times-circle"></i></div>
+            <div class="content-card-delete" @click="deleteCardData(index)"
+            v-if="is_signed_in==true"><i class="far fa-times-circle"></i></div>
         </div>
          <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
-         @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true">
+         @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
+         v-if="is_signed_in==true">
             <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
             <h1 v-else class="text-center">ADD</h1>
         </div>
@@ -69,9 +71,9 @@ export default {
 
         };
     },
-    props: ['is_signed_in'],
+    props:['is_signed_in','authUser'],
     mounted () {
-        this.loadExploreCardsData()
+        this.loadExploreCardsData();
     }, 
     methods: {
         onAddCardSelected(event)
@@ -160,23 +162,17 @@ export default {
         },
         loadExploreCardsData()
         {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    firebase.storage().ref('explore/savedCards.json').getDownloadURL().then((savedDataURL) => {
-                        axios.get(savedDataURL)
-                        .then((response) => {
-                            console.log(response.data.cards)
-                            this.card_data = response.data.cards;
-                        });
-                        console.log('Load Worked');
-                    }).catch(error => {
-                        console.log('Load failed' + error);
-                    })
-                } else {
-                    console.log('Error: No User Signed In')
-                }
+            firebase.storage().ref('explore/savedCards.json').getDownloadURL().then((savedDataURL) => {
+                axios.get(savedDataURL)
+                .then((response) => {
+                    console.log(response.data.cards)
+                    this.card_data = response.data.cards;
+                });
+                console.log('Load Worked');
+            }).catch(error => {
+                console.log('Load failed' + error);
             })
-        },
+    },
     }
 }
 </script>

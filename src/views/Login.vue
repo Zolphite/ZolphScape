@@ -23,7 +23,7 @@
                         </div>
                         <p>
                             Don't have an account? 
-                            <a href="#">Register Here</a>
+                            <a href="/register">Register Here</a>
                         </p>
                     </form>
                 </div>
@@ -36,6 +36,7 @@
 import firebase from "../utilities/firebase";
 
 export default {
+  props:['is_signed_in','authUser'],
   data() {
     return {
       login_form: {

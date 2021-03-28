@@ -27,7 +27,8 @@
                 <label class="content-card-title">{{ item.title }}</label>
                 <!-- <label class="content-card-followed">Linked: 0</label> -->
             </div>
-            <div class="content-card-delete" @click="deleteCardData(index)"><i class="far fa-times-circle"></i></div>
+            <div class="content-card-delete" @click="deleteCardData(index)"
+            v-if="current_user.uid == user_id"><i class="far fa-times-circle"></i></div>
         </div>
          <div class="content-add-card" v-if="current_user.uid == user_id" @mouseenter="is_showing_big_add=true" 
          @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true">
@@ -83,7 +84,7 @@ export default {
 
         };
     },
-    props: ['is_signed_in', 'user_id'],
+    props: ['is_signed_in', 'authUser', 'user_id'],
     mounted () {
         this.loadExploreCardsData();
         this.loadUserProfileData();
@@ -174,22 +175,16 @@ export default {
         },
         loadExploreCardsData()
         {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    this.current_user = user;
-                    firebase.storage().ref('users/' + this.user_id+ '/savedCard.json').getDownloadURL().then((savedDataURL) => {
-                        axios.get(savedDataURL)
-                        .then((response) => {
-                            console.log(response.data.cards)
-                            this.card_data = response.data.cards;
-                        });
-                        console.log('Load Worked');
-                    }).catch(error => {
-                        console.log('Load failed' + error);
-                    })
-                } else {
-                    console.log('Error: No User Signed In')
-                }
+            this.current_user = this.authUser;
+            firebase.storage().ref('users/' + this.user_id+ '/savedCard.json').getDownloadURL().then((savedDataURL) => {
+                axios.get(savedDataURL)
+                .then((response) => {
+                    console.log(response.data.cards)
+                    this.card_data = response.data.cards;
+                });
+                console.log('Load Worked');
+            }).catch(error => {
+                console.log('Load failed' + error);
             })
         },
         loadUserProfileData () {

@@ -42,7 +42,7 @@ export default {
             ]
         };
     },
-    props: ['is_signed_in'],
+    props:['is_signed_in','authUser'],
     mounted () {
         this.loadUserProfileData()
     }, 

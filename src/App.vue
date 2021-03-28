@@ -1,6 +1,6 @@
 <template>
     <top-area :is_signed_in="is_signed_in" :authUser="authUser"></top-area>
-    <router-view :is_signed_in="is_signed_in"/>
+    <router-view :is_signed_in="is_signed_in" :authUser="authUser"/>
     <bottom-area></bottom-area>
 </template>
 

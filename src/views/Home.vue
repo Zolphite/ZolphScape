@@ -13,9 +13,9 @@
                                 <div class="border-top border-warning w-50 mx-auto caption-divider">
 
                                 </div>
-                                <p class="lead">Find new and interesting charts</p>
-                                <a href="#" class="btn btn-danger btn-lg caption-btn">Learn More</a>
-                                <a href="#" class="btn btn-warning btn-lg caption-btn">Explore Now</a>
+                                <p class="lead">Find new and interesting ideas</p>
+                                <router-link to="/about" class="btn btn-danger btn-lg caption-btn">Learn More</router-link>
+                                <router-link to="/explore" class="btn btn-warning btn-lg caption-btn">Explore Now</router-link>
                             </div>
                         </div>
                     </div>
@@ -28,11 +28,11 @@
                     <div class="container">
                         <div class="row text-start caption2">
                             <div class="col-6 bg-custom py-4 mx-5">
-                                <p class="lead">You're donations help keep us running and 50% of donations go to Humanity Relieft a 501(c)3 charity based in Chicago.</p>
+                                <p class="lead">ZolphScape is powered by the community. Take a look at all the talented users which make up the ZolphScape network.</p>
                                 <div class="border-top border-warning w-50 mx-auto mb-3 caption-divider">
 
                                 </div>
-                                <a href="#" class="btn btn-warning btn-lg wx-3 caption-btn">Donate Now</a>
+                                <router-link to="/users" class="btn btn-warning btn-lg wx-3 caption-btn">View Users</router-link>
                             </div>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                                 <div class="border-top border-warning w-50 caption-divider mx-auto">
                                 </div>
                                 <p class="lead text-end">Check out our code base on github and feel free to expand on it.</p>
-                                <a href="#" class="btn btn-warning btn-lg wx-3 float-end caption-btn">Visit Repository</a>
+                                <a href="https://github.com/Zolphite/ZolphScape" target="_blank" class="btn btn-warning btn-lg wx-3 float-end caption-btn">Visit Repository</a>
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
         <h1 class="text-warning pt-4">What We Have To Offer</h1>
         <div class="border-top border-warning w-25 mx-auto my-3">
         </div>
-        <p class="lead">Managment of information can be broken down into three areas: Contribution, Exploration, and Analysis. </p>
+        <p class="lead">Management of information can be broken down into three areas: Contribution, Exploration, and Analysis. </p>
     </div>
     <!-- End Main Page Heading -->
     <!-- Start Columns-->
@@ -87,24 +87,24 @@
                 <h4 class="my-4 text-uppercase">Contribute</h4>
                 <p>Share any information you can convert to HTML
                      so that your ideas can reach the world.</p>
-                <a href="#" class="btn btn-outline-dark btn-md">Share Now</a>
+                <a :href="'/profile/' + this.authUser.uid" class="btn btn-outline-dark btn-md">Share Now</a>
                 <div class="content-caption-space1"></div>
             </div>
 
             <div class="col-md-4 my-4 text-center">
                 <img src="../assets/imgs/front_page/2.jpg" alt="Explore" class="w-100 h-75">
                 <h4 class="my-4 text-uppercase">Explore</h4>
-                <p>The world around us is clutterd with a constant flow of knowledge.
+                <p>The world around us is cluttered with a constant flow of knowledge.
                     Find the information that matters to you.</p>
-                <a href="#" class="btn btn-outline-dark btn-md content-column-btn">Explore Now</a>
+                <a href="/explore" class="btn btn-outline-dark btn-md content-column-btn">Explore Now</a>
                 <div class="content-caption-space2"></div>
             </div>
 
             <div class="col-md-4 my-4 text-center">
                 <img src="../assets/imgs/front_page/0.jpg" alt="Analyze" class="w-100 h-75">
                 <h4 class="my-4 text-uppercase">Analyze</h4>
-                <p>Store all the information that matters to you in one place and analyze constantly changing data with ease.</p>
-                <a href="#" class="btn btn-outline-dark btn-md content-column-btn">View MyBoard</a>
+                <p>View other peoples profiles to find projects that might speak to you and work together to build a brighter future.</p>
+                <a href="/users" class="btn btn-outline-dark btn-md content-column-btn">View Profiles</a>
                 <div class="content-caption-space3"></div>
             </div>
         </div>
@@ -149,11 +149,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 col-lg-8 col-xl-9 my-auto">
-                    <h4>Looking for talanted front-end and back-end developers?</h4>
+                    <h4>Looking for talented front-end and back-end developers?</h4>
                 </div>
 
                 <div class="col-md-5 col-lg-4 col-xl-3">
-                    <a href="#" class="btn btn-warning btn-lg">Contact Us</a>
+                    <a href="https://www.linkedin.com/in/abdullah-qureshi-5823b1200/" class="btn btn-warning btn-lg">Contact Us</a>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
 
 <script>
 export default {
-props:['is_signed_in']
+    props:['is_signed_in','authUser'],
 }
 </script>
 

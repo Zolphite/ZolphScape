@@ -6,7 +6,7 @@
             <h1 class="text-warning pt-4">About</h1>
             <div class="border-top border-warning w-25 mx-auto my-3">
             </div>
-            <p class="site-desc">ZolphScape is not only a site to showcase my own skillset but also a service which allows for anyone to share their projects and ideas to the public. Data and information is hard to keep track of espcialy in a time where we are all bumbarded with constant flows of information. ZolphScape is a place where you can organize the information that comes into your life.</p>
+            <p class="site-desc">ZolphScape is not only a site to showcase my own skill set but also a service which allows for anyone to share their projects and ideas to the public. Data and information is hard to keep track of especially in a time where we are all bombarded with constant flows of information. ZolphScape is a place where you can organize the information that comes into your life.</p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
                     <div class="col-md-7 about-us-card">
                         <h4 class="mb-2 text-capitalize text-dark our-name">Abdullah Qureshi</h4>
                         <h5 class="mb-4 text-warning">Founder and Lead Developer</h5>
-                        <p class="our-desc">Abdullah is a talented Computer Science Graduated with skills in data science and software engineering. The combination of his skills have helped create zolphscape from the ground up.</p>
+                        <p class="our-desc">Abdullah is a talented Computer Science graduated with skills in data science and software engineering. The combination of his skills have helped create ZolphScape from the ground up.</p>
                     </div>
                     <!-- <a href="#" class="btn btn-outline-dark btn-md">Share Now</a> -->
                     <div class="cc-space"></div>
@@ -43,7 +43,7 @@
                             <br><br>
                             Ali has worked at companies like AT&T and Hilton Worldwide for government and business accounts.
                             <br><br>
-                            A lot of his inspiration and dedication came from visiting his country of ethnic origin Pakistan where he was able to witness poverty first handedly, but also by visting refugee camps in the middle east on volunteer youth trips and from living in a transitional housing program when he was a child with his single mother.
+                            A lot of his inspiration and dedication came from visiting his country of ethnic origin Pakistan where he was able to witness poverty first handedly, but also by visiting refugee camps in the middle east on volunteer youth trips and from living in a transitional housing program when he was a child with his single mother.
                             <br><br>
                             He is also a fan of global affairs, paintball and deep dish pizza. Ali can be reached at ali.khan@humrelief.org                          
                         </p>
@@ -73,7 +73,7 @@
 
 <script>
 export default {
-
+    props:['is_signed_in','authUser'],
 }
 </script>
 

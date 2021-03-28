@@ -37,21 +37,21 @@ const routes = [
     path: "/explore",
     name: "Explore",
     component: explore,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
 
   },
   {
     path: "/users",
     name: "Users",
     component: users,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
 
   },
   {
     path: "/profile/:user_id",
     name: "Profile",
     component: profile,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
     props: true,
   },
   // {
