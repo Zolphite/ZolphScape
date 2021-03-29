@@ -46,13 +46,13 @@ export default {
                     console.log("Signed In")
                     this.is_signed_in = true;
                     this.authUser = user;
-                    console.log(this.is_signed_in)
+                    // console.log(this.is_signed_in)
 
                 } else {
                     console.log("Signed Out")
                     this.is_signed_in = false;
                     this.authUser = {};
-                    console.log(this.is_signed_in)
+                    // console.log(this.is_signed_in)
                 }
             });
         }

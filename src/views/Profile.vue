@@ -4,19 +4,19 @@
             <div class="profile-image-cont">
                 <img v-if="current_user_data.profile_image == null" class="profile-image" src="../../static/assets/defaults/default_profile.png" />
                 <img v-else class="profile-image" :src="'data:image/png;base64,'+current_user_data.profile_image" />
-                <label class="btn profile-image-edit" v-if="current_user.uid == user_id">
+                <label class="btn profile-image-edit" v-if="authUser.uid == user_id">
                     <i class="fas fa-edit"></i>
                     <input type="file" class="profile-input-img" @change="onUpdateProfileDataImage">
                 </label>
             </div>
-            <h1 class="profile-title text-center text-capitalize" v-if="current_user.uid != user_id">{{current_user_data.displayName}}</h1>
+            <h1 class="profile-title text-center text-capitalize" v-if="authUser.uid != user_id">{{current_user_data.displayName}}</h1>
             <h1 class="profile-title text-center text-capitalize" v-else-if="current_user_data.displayName == null">No Display Name</h1>
-            <h1 class="profile-title text-center text-capitalize" v-else>{{current_user.displayName}}</h1>
+            <h1 class="profile-title text-center text-capitalize" v-else>{{current_user_data.displayName}}</h1>
         </div>
         <div class="border-top border-warning w-50 mx-auto my-3">
 
         </div>
-        <h3 class="profile-about text-center" v-if="current_user.uid == user_id">Here is your personal id: {{user_id}}</h3>
+        <h3 class="profile-about text-center" v-if="authUser.uid == user_id">Here is your personal id: {{user_id}}</h3>
     </div>
     <div class="content-section">
         <div class="content-card" v-for="(item, index) in card_data"  v-bind:key="item">
@@ -28,9 +28,9 @@
                 <!-- <label class="content-card-followed">Linked: 0</label> -->
             </div>
             <div class="content-card-delete" @click="deleteCardData(index)"
-            v-if="current_user.uid == user_id"><i class="far fa-times-circle"></i></div>
+            v-if="authUser.uid == user_id"><i class="far fa-times-circle"></i></div>
         </div>
-         <div class="content-add-card" v-if="current_user.uid == user_id" @mouseenter="is_showing_big_add=true" 
+         <div class="content-add-card" v-if="authUser.uid == user_id" @mouseenter="is_showing_big_add=true" 
          @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true">
             <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
             <h1 v-else class="text-center">ADD</h1>
@@ -175,14 +175,13 @@ export default {
         },
         loadExploreCardsData()
         {
-            this.current_user = this.authUser;
             firebase.storage().ref('users/' + this.user_id+ '/savedCard.json').getDownloadURL().then((savedDataURL) => {
                 axios.get(savedDataURL)
                 .then((response) => {
                     console.log(response.data.cards)
                     this.card_data = response.data.cards;
                 });
-                console.log('Load Worked');
+                console.log('Profile Cards Load Worked');
             }).catch(error => {
                 console.log('Load failed' + error);
             })
@@ -194,7 +193,7 @@ export default {
                     // console.log(response.data)
                     this.current_user_data = response.data;
                 });
-                console.log('Load Worked');
+                console.log('Profile Data Load Worked');
             }).catch(error => {
                 console.log('Load failed' + error);
             })      

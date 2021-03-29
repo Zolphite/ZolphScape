@@ -16,7 +16,7 @@
                 <!-- <label class="content-card-followed">Linked: 0</label> -->
             </div>
             <div class="content-card-delete" @click="deleteCardData(index)"
-            v-if="is_signed_in==true"><i class="far fa-times-circle"></i></div>
+            v-if="is_signed_in==true&&authUser.uid==item.creator_id"><i class="far fa-times-circle"></i></div>
         </div>
          <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
          @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
@@ -62,6 +62,7 @@ export default {
                 image_path: null,
                 plotly_html: null,
                 title: null,
+                creator_id: null,
             },
             target_display_frame_info: null,
             target_add_display_frame_info: null,
@@ -107,6 +108,7 @@ export default {
         onConfirmAddCard()
         {
             this.add_new_card.plotly_html = this.target_add_display_frame_info;
+            this.add_new_card.creator_id = this.authUser.uid;
             console.log(this.add_new_card);
             const new_card = Object.assign({}, this.add_new_card);
             this.card_data.push(new_card);
@@ -133,6 +135,7 @@ export default {
         {
             // console.log(targetCardKey);
             this.card_data.splice(targetCardKey, 1);
+            this.saveExploreCardsData();
         },
         displayFrameData(targetCard)
         {
@@ -141,24 +144,21 @@ export default {
         },
         saveExploreCardsData()
         {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    const processed_card_data = {'cards': this.card_data}
-                    console.log(processed_card_data);
-                    // convert your object into a JSON-string
-                    var jsonString = JSON.stringify(processed_card_data);
-                    // create a Blob from the JSON-string
-                    var new_blob = new Blob([jsonString], {type: "application/json"})
-                    firebase.storage().ref('explore/savedCards.json').put(new_blob).then(function () {
-                        console.log('Save Worked');
-                        this.loadExploreCardsData()
-                    }).catch(error => {
-                        console.log('Save failed' + error);
-                    })
-                } else {
-                    console.log('Error: No User Signed In')
-                }
-            })
+            if (this.authUser) {
+                const processed_card_data = {'cards': this.card_data}
+                console.log(processed_card_data);
+                // convert your object into a JSON-string
+                var jsonString = JSON.stringify(processed_card_data);
+                // create a Blob from the JSON-string
+                var new_blob = new Blob([jsonString], {type: "application/json"})
+                firebase.storage().ref('explore/savedCards.json').put(new_blob).then(function () {
+                    console.log('Save Worked');
+                }).catch(error => {
+                    console.log('Save failed' + error);
+                })
+            } else {
+                console.log('Error: No User Signed In')
+            }
         },
         loadExploreCardsData()
         {
