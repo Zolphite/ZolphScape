@@ -30,7 +30,10 @@
     <div class="card-display-shadow" @click="is_displaying_card_content = false" v-if="is_displaying_card_content">
         <div class="card-display-delete" @click="is_displaying_card_content = false"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" v-if="is_displaying_card_content">
-            <iframe class="card-display-frame" :srcdoc="target_display_frame_info" name="card-display"></iframe>
+            <iframe class="card-display-frame" :srcdoc="target_display_frame_info" name="card-display"
+            v-if="target_file_extention != 'pdf'"></iframe>
+            <object class="card-display-frame" :data="target_display_frame_info" name="card-display"
+            v-if="target_file_extention == 'pdf'"></object>
         </div>
     </div>
     <!-- End Card-Display -->
@@ -39,9 +42,12 @@
     <div class="add-card-display-shadow" v-show="is_displaying_add_content">
         <div class="card-display-delete" @click="is_displaying_add_content = false"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" @click="is_displaying_card_content = false">
-            <iframe class="card-display-frame" :srcdoc="target_add_display_frame_info" name="card-display"></iframe>
+            <iframe class="card-display-frame" :srcdoc="target_add_display_frame_info" name="card-display"
+            v-if="add_new_card.file_extention == 'html'"></iframe>
+            <object class="card-display-frame" :data="target_add_display_frame_info" name="card-display"
+            v-if="add_new_card.file_extention == 'pdf'"></object>
             <div class="add-card-display-bottom">
-                <input type="file" class="input-file" @change="onAddCardSelected">
+                <input type="file" class="input-file" accept=".html,.pdf" @change="onAddCardSelected">
                 <input type="file" class="input-img" @change="onAddImgSelected">
                 <button class="add_card_button" @click="onConfirmAddCard">Confirm</button>
             </div>
@@ -63,8 +69,11 @@ export default {
                 plotly_html: null,
                 title: null,
                 creator_id: null,
+                file_extention: null,
+                file_name: null,
             },
             target_display_frame_info: null,
+            target_file_extention: null,
             target_add_display_frame_info: null,
             is_showing_big_add: false,
             is_displaying_card_content: false,
@@ -80,15 +89,35 @@ export default {
         onAddCardSelected(event)
         {
             console.log(event.target.files[0].name)
-            this.add_new_card.title = event.target.files[0].name;
             const file = event.target.files[0];
+            
+
+            const name = event.target.files[0].name;
+            const lastDot = name.lastIndexOf('.');
+
+            const fileName = name.substring(0, lastDot);
+            const ext = name.substring(lastDot + 1);
+
             const reader = new FileReader();
 
-            reader.readAsText(file);
             reader.onload =  evt => {
                 this.target_add_display_frame_info = evt.target.result;
-                console.log(evt.target.result);
-            }    
+                // console.log(evt.target.result);
+            }
+            // reader.readAsDataURL(file);
+            
+            if (ext == 'html')
+            {
+                reader.readAsText(file);
+            }
+            else if (ext == 'pdf')
+            {
+                reader.readAsDataURL(file);
+            }
+
+            this.add_new_card.title = fileName;
+            this.add_new_card.file_extention = ext;
+            this.add_new_card.file_name = name;
         },
         onAddImgSelected(event)
         {
@@ -140,6 +169,7 @@ export default {
         displayFrameData(targetCard)
         {
             this.target_display_frame_info = targetCard.plotly_html;
+            this.target_file_extention = targetCard.file_extention;
             this.is_displaying_card_content = true;
         },
         saveExploreCardsData()
@@ -444,6 +474,31 @@ export default {
 /* End Card Display */
 
 /* Start Add Card Display */
+.add-card-display-shadow .card-display-background {
+    position: fixed;
+    width: 96%;
+    height: 92%;
+ 
+    top: 0px;
+    background: rgba(65, 65, 65, 0.658);
+    box-shadow: -3px 3px 8px 3px rgba(0,0,0, 0.6);
+    border-radius: 9px 9px 9px 9px;
+    margin: 30px auto;
+    
+    left: 0px;
+    right: 0px;
+    z-index: 1001;
+    overflow-y: scroll;
+    transition: all .5s ease;
+    /*scrollbar-width: none;  Firefox */
+    /*-ms-overflow-style: none;   Internet Explorer 10+ */
+}
+
+/* --Works only for chromium stuff */
+/* .add-card-display-shadow .card-display-background::-webkit-scrollbar {
+    display: none;
+} */
+
 .add-card-display-shadow {
     z-index: 1000;
     position: fixed;
@@ -466,10 +521,10 @@ export default {
 }
 .add-card-display-bottom {
     position: absolute;
-    bottom: 0px;
-    height: 50px;
+    top: 92%;
+    height: 200px;
     width: 100%;
-    background-image: linear-gradient(to right, rgba(250, 226, 89, 0.514), rgba(250, 180, 30, 0.404));
+    background-image: linear-gradient(to right, rgba(255, 242, 170, 0.9), rgba(252, 200, 87, 0.9));
     pointer-events: none;
 }
 
