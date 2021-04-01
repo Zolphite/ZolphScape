@@ -18,12 +18,13 @@
             <div class="content-card-delete" @click="deleteCardData(index)"
             v-if="is_signed_in==true&&authUser.uid==item.creator_id"><i class="far fa-times-circle"></i></div>
         </div>
-         <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
+        <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
          @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
          v-if="is_signed_in==true">
             <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
             <h1 v-else class="text-center">ADD</h1>
         </div>
+        <div class="extra-space"></div>
     </div>
 
     <!-- Start Card-Display -->
@@ -47,7 +48,7 @@
             <object class="card-display-frame" :data="target_add_display_frame_info" name="card-display"
             v-if="add_new_card.file_extention == 'pdf'"></object>
             <div class="add-card-display-bottom">
-                <input type="file" class="input-file" accept=".html,.pdf" @change="onAddCardSelected">
+                <input type="file" class="input-file" accept=".html" @change="onAddCardSelected">
                 <input type="file" class="input-img" @change="onAddImgSelected">
                 <button class="add_card_button" @click="onConfirmAddCard">Confirm</button>
             </div>
@@ -222,31 +223,26 @@ export default {
     margin: 0 100px;
 }
 
-/* Start Content-Section */
-.content-section {
-    background-image: linear-gradient(to bottom, rgba(252, 251, 240, 0.3), rgba(197, 196, 193, 0.5));
-    border: none;
-    border-radius: 9px 9px 9px 9px; 
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-}
-
-/* --Works only for chromium stuff */
-.content-section::-webkit-scrollbar {
-    display: none;
-}
-
 /* Start of CSS Content Section */
 .content-section {
-    background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178));
+    /* background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178)); */
     border: none;
     border-radius: 9px 9px 9px 9px; 
     height: 100vh;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    display: grid;
+    grid-auto-flow: row ;
+    grid-auto-rows: 45% ;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: unset;
+
+    justify-items: center;
+    align-items: center;
+    padding: 20px;
+    grid-gap: 50px;
+    margin-bottom: 20px;
 }
 
 /* --Works only for chromium stuff */
@@ -256,12 +252,14 @@ export default {
 
 /* Start of CSS Content Card */
 .content-card {
+    display: inline-block;
     position: relative;
     overflow: hidden;
     float: left;
-    width: 435px;
-    height: 300px;
-    margin: 40px 36px;
+    /* width: 435px;
+    height: 300px; */
+    width: 100%;
+    height: 100%;
     border-radius: 9px 9px 9px 9px;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
     border: 0px solid rgba(223, 219, 255, 0.8);
@@ -377,9 +375,12 @@ export default {
     float: left;
     width: 100px;
     height: 100px;
-    margin-left: 100px;
+    align-items: center;
+    /* width: 20%;
+    height: 20%; */
+    /* margin-left: 100px;
     margin-top: 100px;
-    margin-bottom: 100px;
+    margin-bottom: 100px; */
     
     background-image: linear-gradient(to bottom, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
     border-radius: 32px 32px 32px 32px;
@@ -538,28 +539,31 @@ export default {
 
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
-    .content-card {
+    /* .content-card {
         width: 269px;
         height: 200px;
-    }
+    } */
     .content-card-title {
         font-size: 14px;
     }
 }
 /* Devices under 768px (md) */
 @media (max-width: 768.98px) {
-    .content-card {
+    /* .content-card {
         width: 312px;
         height: 220px;
-    }
+    } */
 }
 
 /* Devices under 576px (md) */
 @media (max-width: 575.8px) {
-    .content-card {
+    .content-section {
+        grid-template-columns: 1fr;
+    }
+    /* .content-card {
         width: 355px;
         height: 250px;
-    }
+    } */
     .explore-about {
         font-size: 20px;
         margin: 0 20px;
@@ -583,18 +587,18 @@ export default {
 
 /* mobile medium */
 @media (max-width: 376px) {
-    .content-card {
+    /* .content-card {
         width: 300px;
         height: 230px;
-    }
+    } */
 }
 
 /* mobile small */
 @media (max-width: 321px) {
-    .content-card {
+    /* .content-card {
         width: 252px;
         height: 230px;
-    }
+    } */
     .explore-about {
         font-size: 18px;
     }
