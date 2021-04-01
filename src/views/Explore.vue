@@ -18,13 +18,14 @@
             <div class="content-card-delete" @click="deleteCardData(index)"
             v-if="is_signed_in==true&&authUser.uid==item.creator_id"><i class="far fa-times-circle"></i></div>
         </div>
-        <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
-         @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
-         v-if="is_signed_in==true">
-            <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
-            <h1 v-else class="text-center">ADD</h1>
+        <div class="add-card-space">
+            <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
+            @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
+            v-if="is_signed_in==true">
+                <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
+                <h1 v-else class="text-center">ADD</h1>
+            </div>
         </div>
-        <div class="extra-space"></div>
     </div>
 
     <!-- Start Card-Display -->
@@ -240,8 +241,9 @@ export default {
 
     justify-items: center;
     align-items: center;
-    padding: 20px;
-    grid-gap: 50px;
+    padding: 10px;
+    grid-column-gap: 0px;
+    grid-row-gap: 20px;
     margin-bottom: 20px;
 }
 
@@ -252,14 +254,13 @@ export default {
 
 /* Start of CSS Content Card */
 .content-card {
-    display: inline-block;
     position: relative;
     overflow: hidden;
     float: left;
     /* width: 435px;
     height: 300px; */
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
     border-radius: 9px 9px 9px 9px;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
     border: 0px solid rgba(223, 219, 255, 0.8);
@@ -369,19 +370,30 @@ export default {
 /* End of Content Card */
 
 /* Start Add Card Section */
+.add-card-space {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+    align-items: center;
+    /* flex-direction: column; */
+
+}
+
 .content-add-card {
     position: relative;
     overflow: hidden;
-    float: left;
+    /* float: left; */
     width: 100px;
     height: 100px;
-    align-items: center;
     /* width: 20%;
     height: 20%; */
     /* margin-left: 100px;
     margin-top: 100px;
     margin-bottom: 100px; */
-    
+    display: inline-block;
+    margin: 0 auto;
     background-image: linear-gradient(to bottom, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
     border-radius: 32px 32px 32px 32px;
     box-shadow: -1px 1px 8px 1px rgba(90, 85, 57, 0.5);
