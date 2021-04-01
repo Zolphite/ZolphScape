@@ -6,7 +6,15 @@
         </div>
         <h3 class="explore-about text-center">Find data that moves you. Like cards you enjoy. Follow cards you love.</h3>
     </div>
+
     <div class="content-section">
+        <!-- <div class="spinner-border text-warning" role="status" >
+            <span class="sr-only text-warning">Loading...</span>
+        </div> // Use this incase font-awsome spinners have issues. This is how to
+        implement bootstrap spinners-->
+        <div class="fa-3x text-warning content-loading-spinner" v-if="is_card_data_loaded == false">
+            <i class="fas fa-spinner fa-pulse"></i>
+        </div>
         <div class="content-card" v-for="(item, index) in card_data"  v-bind:key="item">
             <div class="content-card-display-img">
                 <img :src="'data:image/png;base64,'+item.image_path" />
@@ -39,7 +47,7 @@
         </div>
     </div>
     <!-- End Card-Display -->
-
+    
     <!-- Start Add-Card-Display -->
     <div class="add-card-display-shadow" v-show="is_displaying_add_content">
         <div class="card-display-delete" @click="is_displaying_add_content = false"><i class="far fa-times-circle"></i></div>
@@ -56,6 +64,18 @@
         </div>
     </div>
     <!-- End Add-Card-Display -->
+
+    <!-- Start is-saving-spinner -->
+    <!--  -->
+    <div class="is-saving-cards-spinner" v-if="is_saving_cards == true">
+        <div class="text-warning">
+            <span>
+                <i class="saving-text">saving...</i>
+                <i class="fas fa-spinner fa-pulse"></i>
+            </span>
+        </div>
+    </div>
+    <!-- End is-saving-spinner -->
 </template>
 
 <script>
@@ -80,7 +100,8 @@ export default {
             is_showing_big_add: false,
             is_displaying_card_content: false,
             is_displaying_add_content: false,
-
+            is_card_data_loaded: false,
+            is_saving_cards: false,
         };
     },
     props:['is_signed_in','authUser'],
@@ -177,15 +198,18 @@ export default {
         saveExploreCardsData()
         {
             if (this.authUser) {
+                this.is_saving_cards = true;
                 const processed_card_data = {'cards': this.card_data}
                 console.log(processed_card_data);
                 // convert your object into a JSON-string
                 var jsonString = JSON.stringify(processed_card_data);
                 // create a Blob from the JSON-string
                 var new_blob = new Blob([jsonString], {type: "application/json"})
-                firebase.storage().ref('explore/savedCards.json').put(new_blob).then(function () {
+                firebase.storage().ref('explore/savedCards.json').put(new_blob).then(() =>{
+                    this.is_saving_cards = false;
                     console.log('Save Worked');
                 }).catch(error => {
+                    this.is_saving_cards = false;
                     console.log('Save failed' + error);
                 })
             } else {
@@ -199,6 +223,7 @@ export default {
                 .then((response) => {
                     console.log(response.data.cards)
                     this.card_data = response.data.cards;
+                    this.is_card_data_loaded = true;
                 });
                 console.log('Load Worked');
             }).catch(error => {
@@ -414,7 +439,7 @@ export default {
 
 .content-add-card h1{
     font-size: 80px;
-    color: rgb(204, 204, 204);
+    color: rgb(216, 216, 216);
     font-weight: bold;
 }
 
@@ -549,6 +574,18 @@ export default {
 }
 /* End Add Card Display */
 
+.is-saving-cards-spinner {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.saving-text {
+    font-size: 10px;
+    margin: 10px;
+}
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
     /* .content-card {
