@@ -8,6 +8,9 @@
                     <i class="fas fa-edit"></i>
                     <input type="file" class="profile-input-img" @change="onUpdateProfileDataImage">
                 </label>
+                <label class="btn profile-get-url" v-if="authUser.uid == user_id" @click="is_displaying_url = true">
+                    <i class="fas fa-share-alt" ></i>
+                </label>
             </div>
             <h1 class="profile-title text-center text-capitalize" v-if="authUser.uid != user_id">{{current_user_data.displayName}}</h1>
             <h1 class="profile-title text-center text-capitalize" v-else-if="current_user_data.displayName == null">No Display Name</h1>
@@ -16,9 +19,17 @@
         <div class="border-top border-warning w-50 mx-auto my-3">
 
         </div>
-        <h3 class="profile-about text-center" v-if="authUser.uid == user_id">Here is your personal id: {{user_id}}</h3>
+        <h5 class="profile-about text-center" v-if="authUser.uid == user_id && current_user_data.description == null">
+            No Description
+            <label class="profile-about-edit" v-if="authUser.uid == user_id">
+                <i class="fas fa-edit"></i>
+            </label>          
+        </h5>
     </div>
     <div class="content-section">
+        <div class="fa-3x text-warning content-loading-spinner" v-if="is_card_data_loaded == false">
+            <i class="fas fa-spinner fa-pulse"></i>
+        </div>
         <div class="content-card" v-for="(item, index) in card_data"  v-bind:key="item">
             <div class="content-card-display-img">
                 <img :src="'data:image/png;base64,'+item.image_path" />
@@ -30,10 +41,13 @@
             <div class="content-card-delete" @click="deleteCardData(index)"
             v-if="authUser.uid == user_id"><i class="far fa-times-circle"></i></div>
         </div>
-         <div class="content-add-card" v-if="authUser.uid == user_id" @mouseenter="is_showing_big_add=true" 
-         @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true">
-            <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
-            <h1 v-else class="text-center">ADD</h1>
+        <div class="add-card-space">
+            <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
+            @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
+            v-if="is_signed_in==true">
+                <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
+                <h1 v-else class="text-center">ADD</h1>
+            </div>
         </div>
     </div>
 
@@ -41,24 +55,50 @@
     <div class="card-display-shadow" @click="is_displaying_card_content = false" v-if="is_displaying_card_content">
         <div class="card-display-delete" @click="is_displaying_card_content = false"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" v-if="is_displaying_card_content">
-            <iframe class="card-display-frame" :srcdoc="target_display_frame_info" name="card-display"></iframe>
+            <iframe class="card-display-frame" :srcdoc="target_display_frame_info" name="card-display"
+            v-if="target_file_extention != 'pdf'"></iframe>
+            <object class="card-display-frame" :data="target_display_frame_info" name="card-display"
+            v-if="target_file_extention == 'pdf'"></object>
         </div>
     </div>
     <!-- End Card-Display -->
-
+    
     <!-- Start Add-Card-Display -->
     <div class="add-card-display-shadow" v-show="is_displaying_add_content">
         <div class="card-display-delete" @click="is_displaying_add_content = false"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" @click="is_displaying_card_content = false">
-            <iframe class="card-display-frame" :srcdoc="target_add_display_frame_info" name="card-display"></iframe>
+            <iframe class="card-display-frame" :srcdoc="target_add_display_frame_info" name="card-display"
+            v-if="add_new_card.file_extention == 'html'"></iframe>
+            <object class="card-display-frame" :data="target_add_display_frame_info" name="card-display"
+            v-if="add_new_card.file_extention == 'pdf'"></object>
             <div class="add-card-display-bottom">
-                <input type="file" class="input-file" @change="onAddCardSelected">
-                <input type="file" class="input-img" @change="onAddImgSelected">
+                <input type="file" class="input-file" accept=".html" @change="onAddCardSelected">
+                <input type="file" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
                 <button class="add_card_button" @click="onConfirmAddCard">Confirm</button>
             </div>
         </div>
     </div>
     <!-- End Add-Card-Display -->
+
+    <!-- Start is-displaying-url -->
+    <div class="url-display-bg" v-if="is_displaying_url == true">
+        <div class="url-display text-center">
+            <div class="url-display-delete" @click="is_displaying_url = false"><i class="far fa-times-circle"></i></div>
+            <h3 class="text-warning text-uppercase">Your URL is:</h3>
+            <p class="text-primary bg-gray px-2">zolphscape.com/profile/{{ authUser.uid}}</p>
+        </div>
+    </div>
+    <!-- End display of url -->
+    <!-- Start is-saving-spinner -->
+    <div class="is-saving-cards-spinner" v-if="is_saving_cards == true">
+        <div class="text-warning">
+            <span>
+                <i class="saving-text">saving...</i>
+                <i class="fas fa-spinner fa-pulse"></i>
+            </span>
+        </div>
+    </div>
+    <!-- End is-saving-spinner -->
 </template>
 
 <script>
@@ -81,7 +121,9 @@ export default {
             is_showing_big_add: false,
             is_displaying_card_content: false,
             is_displaying_add_content: false,
-
+            is_card_data_loaded: false,
+            is_saving_cards: false,
+            is_displaying_url: false,
         };
     },
     props: ['is_signed_in', 'authUser', 'user_id'],
@@ -146,6 +188,7 @@ export default {
         {
             // console.log(targetCardKey);
             this.card_data.splice(targetCardKey, 1);
+            this.saveExploreCardsData();
         },
         displayFrameData(targetCard)
         {
@@ -154,24 +197,25 @@ export default {
         },
         saveExploreCardsData()
         {
-            firebase.auth().onAuthStateChanged((user) => {
-                if (user) {
-                    const processed_card_data = {'cards': this.card_data}
-                    console.log(processed_card_data);
-                    // convert your object into a JSON-string
-                    var jsonString = JSON.stringify(processed_card_data);
-                    // create a Blob from the JSON-string
-                    var new_blob = new Blob([jsonString], {type: "application/json"})
-                    firebase.storage().ref('users/' + user.uid + '/savedCard.json').put(new_blob).then(function () {
-                        console.log('Save Worked');
-                        // this.loadExploreCardsData()
-                    }).catch(error => {
-                        console.log('Save failed' + error);
-                    })
-                } else {
-                    console.log('Error: No User Signed In')
-                }
-            })
+            if (this.authUser) {
+                this.is_saving_cards = true;
+                const processed_card_data = {'cards': this.card_data}
+                console.log(processed_card_data);
+                // convert your object into a JSON-string
+                var jsonString = JSON.stringify(processed_card_data);
+                // create a Blob from the JSON-string
+                var new_blob = new Blob([jsonString], {type: "application/json"})
+                firebase.storage().ref('users/' + this.authUser.uid + '/savedCard.json').put(new_blob).then(() => {
+                    console.log('Save Worked');
+                    this.is_saving_cards = false;
+                    // this.loadExploreCardsData()
+                }).catch(error => {
+                    console.log('Save failed' + error);
+                    this.is_saving_cards = false;
+                })
+            } else {
+                console.log('Error: No User Signed In')
+            }
         },
         loadExploreCardsData()
         {
@@ -180,6 +224,7 @@ export default {
                 .then((response) => {
                     console.log(response.data.cards)
                     this.card_data = response.data.cards;
+                    this.is_card_data_loaded = true;
                 });
                 console.log('Profile Cards Load Worked');
             }).catch(error => {
@@ -242,6 +287,14 @@ export default {
     color: rgb(255, 185, 32);
 }
 
+.profile-about-edit{
+    font-size: 12px;
+    margin-left: 24px;
+}
+
+.profile-about-edit .fa-edit{
+    margin-bottom: 16px;
+}
 .profile-image-cont {
     position: relative;
     display: block;
@@ -253,6 +306,7 @@ export default {
     height: 100%;
     width: 100%;
     box-shadow: -1px 1px 8px 4px rgba(90, 84, 57, 0.3);
+    border-radius: 1rem;
 }
 
 .profile-image-edit {
@@ -262,33 +316,39 @@ export default {
     height: 34px;
     width: 34px;
 }
-.profile-input-img {
-    display: none;
-}
-.content-section {
-    background-image: linear-gradient(to bottom, rgba(252, 251, 240, 0.3), rgba(197, 196, 193, 0.5));
-    border: none;
-    border-radius: 9px 9px 9px 9px; 
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-}
 
-/* --Works only for chromium stuff */
-.content-section::-webkit-scrollbar {
+.profile-get-url {
+    position: absolute;
+    top: 25px;
+    right: -34px;
+    height: 34px;
+    width: 34px;
+}
+.profile-input-img {
     display: none;
 }
 
 /* Start of CSS Content Section */
 .content-section {
-    background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178));
+    /* background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178)); */
     border: none;
     border-radius: 9px 9px 9px 9px; 
     height: 100vh;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    display: grid;
+    grid-auto-flow: row ;
+    grid-auto-rows: 45% ;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: unset;
+
+    justify-items: center;
+    align-items: center;
+    padding: 10px;
+    grid-column-gap: 0px;
+    grid-row-gap: 20px;
+    margin-bottom: 20px;
 }
 
 /* --Works only for chromium stuff */
@@ -301,9 +361,10 @@ export default {
     position: relative;
     overflow: hidden;
     float: left;
-    width: 435px;
-    height: 300px;
-    margin: 40px 36px;
+    /* width: 435px;
+    height: 300px; */
+    width: 90%;
+    height: 90%;
     border-radius: 9px 9px 9px 9px;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
     border: 0px solid rgba(223, 219, 255, 0.8);
@@ -413,16 +474,30 @@ export default {
 /* End of Content Card */
 
 /* Start Add Card Section */
+.add-card-space {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+    align-items: center;
+    /* flex-direction: column; */
+
+}
+
 .content-add-card {
     position: relative;
     overflow: hidden;
-    float: left;
+    /* float: left; */
     width: 100px;
     height: 100px;
-    margin-left: 100px;
+    /* width: 20%;
+    height: 20%; */
+    /* margin-left: 100px;
     margin-top: 100px;
-    margin-bottom: 100px;
-    
+    margin-bottom: 100px; */
+    display: inline-block;
+    margin: 0 auto;
     background-image: linear-gradient(to bottom, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
     border-radius: 32px 32px 32px 32px;
     box-shadow: -1px 1px 8px 1px rgba(90, 85, 57, 0.5);
@@ -513,6 +588,10 @@ export default {
     transition: all .2s ease;
 }
 
+.card-display-delete:hover {
+    cursor: pointer;
+}
+
 /* End Card Display */
 
 /* Start Add Card Display */
@@ -553,32 +632,87 @@ export default {
 }
 /* End Add Card Display */
 
+/* Start url display */
+.url-display-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1020;
+    background: linear-gradient(to left, rgba(216, 218, 128, 0.4), rgba(233, 178, 132, 0.5));
+}
+
+.url-display{
+    border-radius: 1rem;
+    box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
+    background: white;
+    padding: 1rem;
+    z-index: 1021;
+}
+
+.url-display-delete {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    font-size: 26px;
+    margin: 2rem;
+    color: #ff3232;
+    transition: all .2s ease;
+}
+.url-display-delete:hover {
+    cursor: pointer;
+}
+/* End url display */
+
+/* Start saving Cards Spinnr */
+.is-saving-cards-spinner {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.saving-text {
+    font-size: 10px;
+    margin: 10px;
+}
+/* end saving Cards Spinner */
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
-    .content-card {
+    /* .content-card {
         width: 269px;
         height: 200px;
-    }
+    } */
     .content-card-title {
         font-size: 14px;
     }
 }
 /* Devices under 768px (md) */
 @media (max-width: 768.98px) {
-    .content-card {
+    /* .content-card {
         width: 312px;
         height: 220px;
-    }
+    } */
 }
 
 /* Devices under 576px (md) */
 @media (max-width: 575.8px) {
-    .content-card {
+    .content-section {
+        grid-template-columns: 1fr;
+    }
+    /* .content-card {
         width: 355px;
         height: 250px;
-    }
-    .profile-about {
+    } */
+    .explore-about {
         font-size: 20px;
+        margin: 0 20px;
+
     }
     .add_card_button {
         font-size: 9px;
@@ -598,19 +732,19 @@ export default {
 
 /* mobile medium */
 @media (max-width: 376px) {
-    .content-card {
+    /* .content-card {
         width: 300px;
         height: 230px;
-    }
+    } */
 }
 
 /* mobile small */
 @media (max-width: 321px) {
-    .content-card {
+    /* .content-card {
         width: 252px;
         height: 230px;
-    }
-    .profile-about {
+    } */
+    .explore-about {
         font-size: 18px;
     }
     .add_card_button {

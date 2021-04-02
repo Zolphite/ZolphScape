@@ -58,7 +58,7 @@
             v-if="add_new_card.file_extention == 'pdf'"></object>
             <div class="add-card-display-bottom">
                 <input type="file" class="input-file" accept=".html" @change="onAddCardSelected">
-                <input type="file" class="input-img" @change="onAddImgSelected">
+                <input type="file" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
                 <button class="add_card_button" @click="onConfirmAddCard">Confirm</button>
             </div>
         </div>
