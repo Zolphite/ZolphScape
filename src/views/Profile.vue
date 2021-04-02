@@ -19,13 +19,38 @@
         <div class="border-top border-warning w-50 mx-auto my-3">
 
         </div>
-        <h5 class="profile-about text-center" v-if="authUser.uid == user_id && current_user_data.description == null">
-            No Description
-            <label class="profile-about-edit" v-if="authUser.uid == user_id">
+        <h5 class="profile-about text-center">
+            <i v-if="authUser.uid == user_id && current_user_data.description == null">
+                No Description
+            </i>
+            <i v-if="authUser.uid == user_id && current_user_data.description != null">
+                {{current_user_data.description}}
+            </i>
+            <label class="profile-about-edit" v-if="authUser.uid == user_id"
+            @click="onUpdateProfileDataDesc()">
                 <i class="fas fa-edit"></i>
             </label>          
         </h5>
     </div>
+    <!-- Start Edit Description section -->
+    <div class="edit-desc-bg" v-if="is_editing_desc == true">
+        <div class="edit-desc text-center">
+            <div class="url-display-delete" @click="is_editing_desc = false">
+                <i class="far fa-times-circle"></i>
+            </div>
+            <h3 class="text-warning text-uppercase">Edit Description</h3>
+            <div class="border-top border-warning w-50 mx-auto">
+
+            </div>
+            <!-- <input class="">{{current_user_data.description}}</input> -->
+            <textarea class="w-100 my-4 py-2 bg-gray" v-model="edited_description_text"></textarea>
+            <button class="btn btn-warning btn-md-md btn-md" 
+            @click="updateProfileDataDesc()">
+                Update Description
+            </button>
+        </div>
+    </div>
+    <!-- End Edit Description section -->
     <div class="content-section">
         <div class="fa-3x text-warning content-loading-spinner" v-if="is_card_data_loaded == false">
             <i class="fas fa-spinner fa-pulse"></i>
@@ -79,13 +104,12 @@
         </div>
     </div>
     <!-- End Add-Card-Display -->
-
     <!-- Start is-displaying-url -->
     <div class="url-display-bg" v-if="is_displaying_url == true">
         <div class="url-display text-center">
             <div class="url-display-delete" @click="is_displaying_url = false"><i class="far fa-times-circle"></i></div>
             <h3 class="text-warning text-uppercase">Your URL is:</h3>
-            <p class="text-primary bg-gray px-2">zolphscape.com/profile/{{ authUser.uid}}</p>
+            <div class="url-link text-primary bg-gray px-2 border border-secondary">zolphscape.com/profile/{{ authUser.uid}}</div>
         </div>
     </div>
     <!-- End display of url -->
@@ -118,12 +142,14 @@ export default {
             current_user_data: {},
             target_display_frame_info: null,
             target_add_display_frame_info: null,
+            edited_description_text: null,
             is_showing_big_add: false,
             is_displaying_card_content: false,
             is_displaying_add_content: false,
             is_card_data_loaded: false,
             is_saving_cards: false,
             is_displaying_url: false,
+            is_editing_desc: false,
         };
     },
     props: ['is_signed_in', 'authUser', 'user_id'],
@@ -243,6 +269,32 @@ export default {
                 console.log('Load failed' + error);
             })      
         },
+        onUpdateProfileDataDesc()
+        {
+            this.is_editing_desc = true;
+            this.edited_description_text = this.current_user_data.description;
+        },
+        updateProfileDataDesc()
+        {
+            this.is_saving_cards = true;
+            const update_user_data = {'uid': this.current_user_data.uid, 
+                                        'displayName': this.current_user_data.displayName, 
+                                        'description': this.edited_description_text,
+                                        'profile_image': this.current_user_data.profile_image}
+                
+            var jsonString = JSON.stringify(update_user_data);
+
+            var new_blob = new Blob([jsonString], {type: "application/json"})
+            firebase.storage().ref('users/' + this.authUser.uid + '/profileData.json').put(new_blob).then(() => {
+                console.log('Save Worked');
+                this.edited_description_text = null;
+                this.is_editing_desc = false;
+                this.is_saving_cards = false;
+                document.location.reload();                
+            }).catch(error => {
+                console.log('Save failed' + error);
+            })
+        },
         onUpdateProfileDataImage(event)
         {
             // console.log(event)
@@ -285,6 +337,11 @@ export default {
 .profile-title {
     font-weight: bold;
     color: rgb(255, 185, 32);
+}
+
+.profile-about {
+    margin-top: 24px;
+    padding: 0 20%;
 }
 
 .profile-about-edit{
@@ -647,11 +704,27 @@ export default {
 }
 
 .url-display{
+    height: 100px;
+    width: 500px;
     border-radius: 1rem;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
     background: white;
     padding: 1rem;
     z-index: 1021;
+}
+
+.url-link {
+    width: 95%;
+    margin: 0 auto;
+    overflow: hidden;
+    overflow-x: scroll;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+/* --Works only for chromium stuff */
+.url-link::-webkit-scrollbar {
+    display: none;
 }
 
 .url-display-delete {
@@ -667,7 +740,34 @@ export default {
     cursor: pointer;
 }
 /* End url display */
+/* Start Edit Desc display */
+.edit-desc-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1020;
+    background: linear-gradient(to left, rgba(216, 218, 128, 0.4), rgba(233, 178, 132, 0.5));
+}
 
+.edit-desc{
+    border-radius: 1rem;
+    box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
+    background: white;
+    padding: 1rem;
+    z-index: 1021;
+    width: 500px;
+    height: 400px;
+}
+
+.edit-desc textarea{
+    height: 60%;
+}
+/* End Edit Desc display */
 /* Start saving Cards Spinnr */
 .is-saving-cards-spinner {
     position: fixed;
@@ -702,8 +802,16 @@ export default {
 
 /* Devices under 576px (md) */
 @media (max-width: 575.8px) {
+    .url-display{
+        height: 100px;
+        width: 300px;
+        font-size: 16px;
+    }
     .content-section {
         grid-template-columns: 1fr;
+    }
+    .edit-desc {
+        width: 90%;
     }
     /* .content-card {
         width: 355px;
