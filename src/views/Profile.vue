@@ -254,6 +254,7 @@ export default {
                 });
                 console.log('Profile Cards Load Worked');
             }).catch(error => {
+                this.is_card_data_loaded = true;
                 console.log('Load failed' + error);
             })
         },
@@ -417,7 +418,7 @@ export default {
 .content-card {
     position: relative;
     overflow: hidden;
-    float: left;
+    float: center;
     /* width: 435px;
     height: 300px; */
     width: 90%;

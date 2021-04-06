@@ -37,13 +37,27 @@
     </div>
 
     <!-- Start Card-Display -->
-    <div class="card-display-shadow" @click="is_displaying_card_content = false" v-if="is_displaying_card_content">
+    <div class="card-display-shadow" v-if="is_displaying_card_content">
         <div class="card-display-delete" @click="is_displaying_card_content = false"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" v-if="is_displaying_card_content">
             <iframe class="card-display-frame" :srcdoc="target_display_frame_info" name="card-display"
             v-if="target_file_extention != 'pdf'"></iframe>
             <object class="card-display-frame" :data="target_display_frame_info" name="card-display"
             v-if="target_file_extention == 'pdf'"></object>
+            <div class="card-display-bottom">
+                <div class="container input-file-holder w-100">
+                    <div class="input-file-name-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Name: </h3>
+                        <label type="text" class="py-1 mx-3 border border-warning w-50 text-center rounded bg-white">
+                            {{target_display_name}}
+                        </label>
+                    </div>
+                    <div class="input-file-desc-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Description: </h3>
+                        <textarea readonly placeholder="No Description" v-model="target_display_description" class="py-1 w-50 border border-warning rounded"></textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <!-- End Card-Display -->
@@ -57,9 +71,37 @@
             <object class="card-display-frame" :data="target_add_display_frame_info" name="card-display"
             v-if="add_new_card.file_extention == 'pdf'"></object>
             <div class="add-card-display-bottom">
-                <input type="file" class="input-file" accept=".html" @change="onAddCardSelected">
-                <input type="file" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
-                <button class="add_card_button" @click="onConfirmAddCard">Confirm</button>
+                <div class="container input-file-holder w-100">
+                    <div class="row text-center input-file-bg">
+                        <div class="col-md-6 my-3">
+                            <img v-if="add_new_card.image_path != null" class="input-img-display border border-2 border-warning" :src="'data:image/png;base64,'+add_new_card.image_path" alt="Upload Image">
+                            <img v-else class="input-img-display border border-2 border-warning" src="../../static/assets/defaults/default_profile.png" alt="Upload Image">
+                            <div class="w-100">
+                                <input type="file" id="input-img" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
+                                <label for="input-img" class="input-img-cont btn btn-primary">
+                                    <i class="fas fa-image"></i> Upload Image
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex my-3">
+                            <input type="file" id="input-content" class="input-file" accept=".html" @change="onAddCardSelected">
+                            <label for="input-content" class="input-file-cont btn btn-primary align-middle">
+                                <i class="fas fa-upload"></i> Upload Content
+                            </label>
+                        </div>           
+                    </div>
+                    <div class="input-file-name-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Name: </h3>
+                        <input v-model="add_new_card.title" type="text" class="py-1 mx-3 border border-warning w-50 text-center rounded">
+                    </div>
+                    <div class="input-file-desc-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Description: </h3>
+                        <textarea v-model="add_new_card.description" class="py-1 w-50 border border-warning rounded"></textarea>
+                    </div>
+                    <div class="add-card-btn-cont w-100 d-flex justify-content-center">
+                        <button class="add_card_button btn btn-warning text-uppercase" @click="onConfirmAddCard">Confirm</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -93,12 +135,20 @@ export default {
                 creator_id: null,
                 file_extention: null,
                 file_name: null,
+                description: null,
             },
+            // Display Frame Stuff
             target_display_frame_info: null,
             target_file_extention: null,
-            target_add_display_frame_info: null,
-            is_showing_big_add: false,
+            target_display_name: null,
+            target_display_description: null,
             is_displaying_card_content: false,
+            // End Display Frame Stuff
+            target_add_display_frame_info: null,
+            target_add_image_info: null,
+            // target_add_display_name: null,
+            // target_add_content_description: null,
+            is_showing_big_add: false,
             is_displaying_add_content: false,
             is_card_data_loaded: false,
             is_saving_cards: false,
@@ -154,7 +204,6 @@ export default {
                 var pros_result = result.split(",")
                 console.log(pros_result)
                 this.add_new_card.image_path = pros_result[1];
-                
             }
         },
         onConfirmAddCard()
@@ -193,6 +242,8 @@ export default {
         {
             this.target_display_frame_info = targetCard.plotly_html;
             this.target_file_extention = targetCard.file_extention;
+            this.target_display_name = targetCard.title;
+            this.target_display_description = targetCard.description;
             this.is_displaying_card_content = true;
         },
         saveExploreCardsData()
@@ -207,6 +258,14 @@ export default {
                 var new_blob = new Blob([jsonString], {type: "application/json"})
                 firebase.storage().ref('explore/savedCards.json').put(new_blob).then(() =>{
                     this.is_saving_cards = false;
+                    this.target_add_display_frame_info = null;
+                    this.target_add_image_info = null;
+                    this.add_new_card.image_path = null;
+                    this.add_new_card.plotly_html = null;
+                    this.add_new_card.title = null;
+                    this.add_new_card.creator_id = null;
+                    this.add_new_card.file_extention = null;
+                    this.add_new_card.description = null;
                     console.log('Save Worked');
                 }).catch(error => {
                     this.is_saving_cards = false;
@@ -227,6 +286,7 @@ export default {
                 });
                 console.log('Load Worked');
             }).catch(error => {
+                this.is_card_data_loaded = true;
                 console.log('Load failed' + error);
             })
     },
@@ -238,7 +298,7 @@ export default {
 .explore-heading {
     /* background-image: linear-gradient(to top, rgba(255, 255, 255, 0.3), rgba(161, 161, 161, 0.1)); */
     padding: 30px 0;
-
+    box-shadow: 0 .3rem .3rem rgba(173, 173, 173, 0.1);
 }
 
 .explore-title {
@@ -281,7 +341,7 @@ export default {
 .content-card {
     position: relative;
     overflow: hidden;
-    float: left;
+    float: center;
     /* width: 435px;
     height: 300px; */
     width: 90%;
@@ -422,7 +482,7 @@ export default {
     background-image: linear-gradient(to bottom, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
     border-radius: 32px 32px 32px 32px;
     box-shadow: -1px 1px 8px 1px rgba(90, 85, 57, 0.5);
-    border: 1px solid rgba(179, 179, 179, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     transition: all .2s;
 }
 
@@ -434,17 +494,16 @@ export default {
     transform: scale(1.5);
     background-image: linear-gradient(to top, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
     border-radius: 9px 9px 9px 9px;
-    border: 2px solid rgb(226, 226, 226);
+    border: 2px solid rgba(255, 255, 255);
 }
 
 .content-add-card h1{
     font-size: 80px;
-    color: rgb(216, 216, 216);
+    color: white;
     font-weight: bold;
 }
 
 .content-add-card:hover h1 {
-    color: rgb(85, 85, 85);
     font-family: serif;
     font-size: 20px;
     margin: 50% 0;
@@ -487,6 +546,7 @@ export default {
     z-index: 1001;
     overflow: hidden;
     transition: all .5s ease;
+    overflow-y: scroll;
 }
 
 .card-display-frame {
@@ -497,6 +557,15 @@ export default {
     border: none;
     height: 100%;
     width: 100%;
+}
+
+.card-display-bottom {
+    position: absolute;
+    top: 100%;
+    height: auto;
+    width: 100%;
+    background-image: linear-gradient(to right, rgba(255, 242, 170, 0.9), rgba(252, 200, 87, 0.9));
+    /* pointer-events: none; */
 }
 
 .card-display-delete {
@@ -552,25 +621,60 @@ export default {
 .input-file {
     margin: 10px;
     pointer-events: auto;
+    display: none;
+}
+.d-flex {
+    display: flex!important;
+    align-items: center!important;
+    justify-content: center!important;
+}
+.input-file-cont{
+    border: 1px solid #ccc;
+    display: block;
+    padding: 6px 12px;
+    width: 250px;
+    height: 40px;
+}
+.input-img-cont{
+    width: 150px;
+    height: 40px;
 }
 .input-img {
     margin: 10px;
     pointer-events: auto;
+    display: none;
+}
+
+.input-img-display {
+    width: 300px;
+    height: 250px;
+    background: white;
+    border-radius: 18px!important;
+    margin: 16px;
 }
 .add-card-display-bottom {
     position: absolute;
-    top: 92%;
-    height: 200px;
+    top: 100%;
+    height: auto;
     width: 100%;
     background-image: linear-gradient(to right, rgba(255, 242, 170, 0.9), rgba(252, 200, 87, 0.9));
-    pointer-events: none;
+    /* pointer-events: none; */
 }
 
+.input-file-bg{
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    border-radius: 0px 0px 16px 16px;
+}
 .add_card_button {
-    position: absolute;
-    margin: 10px;
-    right: 0;
+    /* position: absolute; */
+    display: block;
+    margin: 12px 0;
+    margin-bottom: 22px;
     pointer-events: auto;
+    height: 44px;
+    width: 150px;
+    font-size: 18px!important;
+    color: white;
 }
 /* End Add Card Display */
 

@@ -7,27 +7,29 @@
         <h3 class="users-about text-center">These users are the backbone of our network.</h3>
     </div>
     <div class="content-section">
-        <div class="container content-card" v-for="(item, index) in users_data"  v-bind:key="item">
-            <div class="content-card-display-img">
-                <img v-if="item.profile_image == null" src="../../static/assets/defaults/default_profile.png" />
-                <img v-else :src="'data:image/png;base64,'+item.profile_image" />
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-6 text-center">
-                    Created: 0
+        <div class="content-card-space" v-for="(item, index) in users_data"  v-bind:key="item">
+            <div class="container content-card">
+                <div class="content-card-display-img">
+                    <img v-if="item.profile_image == null" src="../../static/assets/defaults/default_profile.png" />
+                    <img v-else :src="'data:image/png;base64,'+item.profile_image" />
                 </div>
-                <div class="col-md-6 text-center">
-                    Tracked: {{index}}
+                <div class="row mt-3">
+                    <div class="col-md-6 text-center">
+                        Created: 0
+                    </div>
+                    <div class="col-md-6 text-center">
+                        Tracked: {{index}}
+                    </div>
                 </div>
+                <label class="border-top border-warning w-100 mx-auto">
+
+                </label>
+                <label class="content-card-title text-center w-100 mb-2 text-capitalize">{{ item.displayName }}</label>
+
+                <p class="users-desc text-center" ref="user_desc" v-if="item.description != null">{{item.description}}</p>
+                <p class="users-desc text-center" ref="user_desc" v-else>no description</p>
+                <router-link :to="'/profile/' + item.uid" class="btn btn-warning view-profile-btn btn-sm">View Profile</router-link>
             </div>
-            <label class="border-top border-warning w-100 mx-auto">
-
-            </label>
-            <label class="content-card-title text-center w-100 mb-2 text-capitalize">{{ item.displayName }}</label>
-
-            <label class="users-about text-center w-100" v-if="item.description != null">{{item.description}}</label>
-            <label class="users-about text-center w-100" v-else>no description</label>
-            <router-link :to="'/profile/' + item.uid" class="btn btn-warning view-profile-btn btn-sm">View Profile</router-link>
         </div>
     </div>
 </template>
@@ -73,7 +75,6 @@ export default {
             });
         },
     },
-
 }
 </script>
 
@@ -84,30 +85,32 @@ export default {
 
 }
 
-.content-section {
-    background-image: linear-gradient(to bottom, rgba(252, 251, 240, 0.3), rgba(197, 196, 193, 0.5));
-    border: none;
-    border-radius: 9px 9px 9px 9px; 
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+.content-card-space{
+    height: 100%;
+    width: 100%;
+    position: relative;
 }
-
-/* --Works only for chromium stuff */
-.content-section::-webkit-scrollbar {
-    display: none;
-}
-
 /* Start of CSS Content Section */
 .content-section {
-    background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178));
+    /* background-image: linear-gradient(to bottom, rgb(255, 255, 255), rgba(173, 173, 173, 0.178)); */
     border: none;
     border-radius: 9px 9px 9px 9px; 
     height: 100vh;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    display: grid;
+    grid-auto-flow: row ;
+    grid-auto-rows: 550px ;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: unset;
+
+    justify-items: center;
+    align-items: center;
+    padding: 10px;
+    grid-column-gap: 0px;
+    grid-row-gap: 20px;
+    margin-bottom: 20px;
 }
 
 /* --Works only for chromium stuff */
@@ -119,10 +122,11 @@ export default {
 .content-card {
     position: relative;
     overflow: hidden;
-    float: left;
-    width: 308px;
-    height: 350px;
-    margin: 40px 36px;
+    float: center;
+    /* width: 435px;
+    height: 300px; */
+    width: 90%;
+    height: 90%;
     border-radius: 9px 9px 9px 9px;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
     border: 0px solid rgba(223, 219, 255, 0.8);
@@ -132,22 +136,6 @@ export default {
 .content-card:hover {
     background-image: white;
     box-shadow: -2px 2px 9px 2px rgba(57, 83, 90, 1);
-}
-
-.content-card-bottom {
-    position: absolute;
-    bottom: 0px;
-    height: 50px;
-    width: 100%;
-    background-image: linear-gradient(to right, rgba(250, 226, 89, 0.514), rgba(250, 180, 30, 0.404));
-}
-
-.content-card-bottom {
-    cursor: pointer;
-}
-
-.content-card:hover .content-card-bottom {
-    background-image: linear-gradient(to left, rgba(250, 226, 89, 0.822), rgba(250, 180, 30, 0.678));
 }
 
 .content-card-title {
@@ -164,27 +152,6 @@ export default {
 
     /* font-size: 22px; */
     /* margin: 13px 12px; */
-}
-
-.content-card-followed {
-    pointer-events: none;
-    color: rgba(141, 141, 141, 0.5);
-    float: right;
-    font-weight: none;
-    font-size: 14px;
-    margin: 12px 15px;
-    padding: 3px 8px;
-    border: 2px solid rgba(255, 167, 251, 0.3);
-    border-radius: 9px 9px 9px 9px;
-    transition: all .2s ease-in-out;
-}
-.content-card:hover .content-card-followed{
-    color: rgba(68, 68, 68, 0.9);
-    /* font-size: 15px; */
-    /* padding: 2.5px 7.5px; */
-    /* margin: 12px 12px; */
-    transform: scale(1.10);
-    border: 2px solid rgba(252, 197, 249, 0.5);
 }
 
 .content-card-display-img {
@@ -208,55 +175,44 @@ export default {
     transform: scale(1.02);
 }
 
-.content-card-delete {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    font-size: 16px;
-    margin: 5px;
-    color: #ECA71E;
-    transition: all .2s ease;
-}
-.content-card:hover .content-card-delete:hover {
-    color: rgb(255, 56, 56);
-    font-size: 20px;
-
-}
-.content-card:hover .content-card-delete{
-    margin: 10px;
-    cursor: pointer;
+.users-desc {
+    height: 25%;
+    width: 100%;
+    display: block;
+    /* float: left; */
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .view-profile-btn {
+    position: absolute;
+    bottom: 0;
     display: block;
     width: 50%;
     margin: 0 auto;
+    left: 0;
+    right: 0;
+    margin-bottom: 22px;
 }
 /* End of Content Card */
 
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
-    .content-card {
-        width: 269px;
-        height: 350px;
-    }
     /* .content-card-title {
         font-size: 14px;
     } */
 }
 /* Devices under 768px (md) */
 @media (max-width: 768.98px) {
-    .content-card {
-        width: 312px;
-        height: 350px;
+    .content-section {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
 /* Devices under 576px (md) */
 @media (max-width: 575.8px) {
-    .content-card {
-        width: 355px;
-        height: 385px;
+    .content-section {
+        grid-template-columns: 1fr;
     }
     .explore-about {
         font-size: 20px;
@@ -266,16 +222,12 @@ export default {
 
 /* mobile medium */
 @media (max-width: 376px) {
-    .content-card {
-        width: 300px;
-    }
+
 }
 
 /* mobile small */
 @media (max-width: 321px) {
-    .content-card {
-        width: 252px;
-    }
+
     .explore-about {
         font-size: 18px;
     }
