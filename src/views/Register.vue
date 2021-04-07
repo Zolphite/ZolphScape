@@ -115,9 +115,9 @@ export default {
 .register-form-group > input {
     margin: .5rem 0;
 }
-.border-warning {
+/* .border-warning {
     border-top: .3rem solid #ECA71E!important;
-}
+} */
 
 .register-side > h1 {
     font-weight: bold;

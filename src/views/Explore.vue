@@ -28,7 +28,8 @@
         </div>
         <div class="add-card-space">
             <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
-            @mouseleave="is_showing_big_add=false" @click="is_displaying_add_content = true"
+            @mouseleave="is_showing_big_add=false" 
+            @click="is_displaying_add_content = true;add_new_card.creator_username = authUser.displayName;"
             v-if="is_signed_in==true">
                 <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
                 <h1 v-else class="text-center">ADD</h1>
@@ -48,13 +49,19 @@
                 <div class="container input-file-holder w-100">
                     <div class="input-file-name-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Name: </h3>
-                        <label type="text" class="py-1 mx-3 border border-warning w-50 text-center rounded bg-white">
+                        <label type="text" class="h4 text-warning py-1 mx-3 border border-warning w-50 text-center rounded bg-white">
                             {{target_display_name}}
                         </label>
                     </div>
                     <div class="input-file-desc-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Description: </h3>
-                        <textarea readonly placeholder="No Description" v-model="target_display_description" class="py-1 w-50 border border-warning rounded"></textarea>
+                        <textarea readonly placeholder="No Description" v-model="target_display_description" class="py-1 w-75 border border-warning rounded text-center"></textarea>
+                    </div>
+                    <div class="input-file-creator-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Creator: </h3>
+                        <label class="py-1 w-50 border bg-white h4 text-capitalize text-warning border-warning rounded">
+                            {{target_display_creator_username}}
+                        </label>
                     </div>
                 </div>
             </div>
@@ -98,6 +105,10 @@
                         <h3 class="w-100 my-3 text-white">Description: </h3>
                         <textarea v-model="add_new_card.description" class="py-1 w-50 border border-warning rounded"></textarea>
                     </div>
+                    <div class="input-file-creator-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Creator: </h3>
+                        <label class="py-1 w-50 border bg-white h4 text-capitalize text-warning border-warning rounded">{{add_new_card.creator_username}}</label>
+                    </div>
                     <div class="add-card-btn-cont w-100 d-flex justify-content-center">
                         <button class="add_card_button btn btn-warning text-uppercase" @click="onConfirmAddCard">Confirm</button>
                     </div>
@@ -129,19 +140,22 @@ export default {
             card_data: [
             ],
             add_new_card: {
+                id: null,
                 image_path: null,
                 plotly_html: null,
                 title: null,
-                creator_id: null,
                 file_extention: null,
                 file_name: null,
                 description: null,
+                creator_id: null,
+                creator_username: null,
             },
             // Display Frame Stuff
             target_display_frame_info: null,
             target_file_extention: null,
             target_display_name: null,
             target_display_description: null,
+            target_display_creator_username: null,
             is_displaying_card_content: false,
             // End Display Frame Stuff
             target_add_display_frame_info: null,
@@ -244,6 +258,7 @@ export default {
             this.target_file_extention = targetCard.file_extention;
             this.target_display_name = targetCard.title;
             this.target_display_description = targetCard.description;
+            this.target_display_creator_username = targetCard.creator_username;
             this.is_displaying_card_content = true;
         },
         saveExploreCardsData()
@@ -258,22 +273,27 @@ export default {
                 var new_blob = new Blob([jsonString], {type: "application/json"})
                 firebase.storage().ref('explore/savedCards.json').put(new_blob).then(() =>{
                     this.is_saving_cards = false;
-                    this.target_add_display_frame_info = null;
-                    this.target_add_image_info = null;
-                    this.add_new_card.image_path = null;
-                    this.add_new_card.plotly_html = null;
-                    this.add_new_card.title = null;
-                    this.add_new_card.creator_id = null;
-                    this.add_new_card.file_extention = null;
-                    this.add_new_card.description = null;
+                    this.resetAddCardDisplay()
                     console.log('Save Worked');
                 }).catch(error => {
                     this.is_saving_cards = false;
+                    this.resetAddCardDisplay()
                     console.log('Save failed' + error);
                 })
             } else {
                 console.log('Error: No User Signed In')
             }
+        },
+        resetAddCardDisplay(){
+            this.target_add_display_frame_info = null;
+            this.target_add_image_info = null;
+            this.add_new_card.image_path = null;
+            this.add_new_card.plotly_html = null;
+            this.add_new_card.title = null;
+            this.add_new_card.creator_id = null;
+            this.add_new_card.file_extention = null;
+            this.add_new_card.description = null;
+            this.add_new_card.creator_username = null;
         },
         loadExploreCardsData()
         {
@@ -576,6 +596,7 @@ export default {
     margin: 3px;
     color: #ff3232;
     transition: all .2s ease;
+    z-index: 1020;
 }
 
 /* End Card Display */
@@ -710,6 +731,10 @@ export default {
 
 /* Devices under 576px (md) */
 @media (max-width: 575.8px) {
+    .input-img-display{
+        height: 150px;
+        width: 200px;
+    }
     .content-section {
         grid-template-columns: 1fr;
     }

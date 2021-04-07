@@ -206,9 +206,9 @@ export default {
     font-size: 2.2rem;
     text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, 1);
 }
-.border-warning {
+/* .border-warning {
     border-top: .3rem solid #ECA71E!important;
-}
+} */
 
 .btn-lg {
     /* border-radius: 0!important; */

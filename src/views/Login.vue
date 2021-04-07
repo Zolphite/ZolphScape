@@ -107,9 +107,9 @@ export default {
 .login-form-group > input {
     margin: .9rem 0;
 }
-.border-warning {
+/* .border-warning {
     border-top: .3rem solid #ECA71E!important;
-}
+} */
 
 .login-side > h1 {
     font-weight: bold;
