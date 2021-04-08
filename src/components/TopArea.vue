@@ -15,7 +15,7 @@
         <div class="container-fluid" v-if="is_signed_in==true">
             <div class="row text-end">
                 <div class="col-12">
-                    <a :href="'/profile/' + this.authUser.uid" class="topbar-links px-4">My Profile</a>
+                    <a :href="'/profile/'+false+'/'+ this.authUser.uid" class="topbar-links px-4">My Profile</a>
                     <a class="topbar-links" @click="LogoutUser">Log out</a>
                 </div>
             </div>

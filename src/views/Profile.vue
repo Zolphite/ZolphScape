@@ -103,6 +103,12 @@
                             {{target_display_creator_username}}
                         </label>
                     </div>
+                    <div class="input-file-creator-cont w-100 text-center my-5">
+                        <h3 class="w-100 my-3 text-white">Share Link:</h3>
+                        <label class="overflow-auto py-1 w-50 border bg-white h4 text-primary border-warning rounded">
+                            zolphscape.com/profile/{{target_display_card_id}}/{{authUser.uid}}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,6 +210,7 @@ export default {
             target_display_name: null,
             target_display_description: null,
             target_display_creator_username: null,
+            target_display_card_id: null,
             is_displaying_card_content: false,
             // End Display Frame Stuff
             target_add_display_frame_info: null,
@@ -216,12 +223,26 @@ export default {
             is_editing_desc: false,
         };
     },
-    props: ['is_signed_in', 'authUser', 'user_id'],
+    props: ['is_signed_in', 'authUser', 'user_id', 'card_id'],
     mounted () {
         this.loadExploreCardsData();
         this.loadUserProfileData();
     }, 
     methods: {
+        checkForCardDisplay()
+        {
+            this.card_data.forEach(card => {
+                if(card.id == this.card_id)
+                {
+                    this.target_display_frame_info = card.plotly_html;
+                    this.target_file_extention = card.file_extention;
+                    this.target_display_name = card.title;
+                    this.target_display_description = card.description;
+                    this.target_display_creator_username = card.creator_username;
+                    this.is_displaying_card_content = true;
+                }
+            });
+        },
         onAddCardSelected(event)
         {
             console.log(event.target.files[0].name)
@@ -273,15 +294,30 @@ export default {
         {
             this.add_new_card.plotly_html = this.target_add_display_frame_info;
             this.add_new_card.creator_id = this.authUser.uid;
+            this.add_new_card.id = this.getNewRandomCardId();
             console.log(this.add_new_card);
             const new_card = Object.assign({}, this.add_new_card);
             this.card_data.push(new_card);
             this.target_add_display_frame_info = null;
             this.is_displaying_add_content = false;
-            // this.add_new_card.image_path = null;
-            // this.add_new_card.plotly_html = null;
-            // this.add_new_card.title = null;
-            this.saveExploreCardsData()
+            this.saveExploreCardsData();
+        },
+        getNewRandomCardId()
+        {
+            console.log("Id Generated")
+            let already_exists = true;
+            let new_id = null; 
+            while(already_exists == true)
+            {
+                already_exists = false;
+                new_id = Math.floor(Math.random() * 1000000000000);
+                this.card_data.forEach(card => {
+                    if(card.id == new_id){
+                        already_exists = true;
+                    }
+                });
+            }
+            return new_id;
         },
         fetchCovidGraph()
         {
@@ -308,6 +344,7 @@ export default {
             this.target_display_name = targetCard.title;
             this.target_display_description = targetCard.description;
             this.target_display_creator_username = targetCard.creator_username;
+            this.target_display_card_id = targetCard.id;
             this.is_displaying_card_content = true;
         },
         saveExploreCardsData()
@@ -343,6 +380,7 @@ export default {
             this.add_new_card.file_extention = null;
             this.add_new_card.description = null;
             this.add_new_card.creator_username = null;
+            this.add_new_card.id = null;
         },
         loadExploreCardsData()
         {
@@ -352,6 +390,7 @@ export default {
                     console.log(response.data.cards)
                     this.card_data = response.data.cards;
                     this.is_card_data_loaded = true;
+                    this.checkForCardDisplay();
                 });
                 console.log('Profile Cards Load Worked');
             }).catch(error => {

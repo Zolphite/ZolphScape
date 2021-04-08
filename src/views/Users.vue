@@ -28,7 +28,7 @@
 
                 <p class="users-desc text-center" ref="user_desc" v-if="item.description != null">{{item.description}}</p>
                 <p class="users-desc text-center" ref="user_desc" v-else>no description</p>
-                <router-link :to="'/profile/' + item.uid" class="btn btn-warning view-profile-btn btn-sm">View Profile</router-link>
+                <router-link :to="'/profile/' +false+'/'+ item.uid" class="btn btn-warning view-profile-btn btn-sm">View Profile</router-link>
             </div>
         </div>
     </div>

@@ -48,12 +48,13 @@ const routes = [
 
   },
   {
-    path: "/profile/:user_id",
+    path: "/profile/:card_id/:user_id",
     name: "Profile",
     component: profile,
     // meta: { requiresAuth: true },
     props: true,
   },
+
   // {
   //   path: "/login",
   //   name: "Login",
