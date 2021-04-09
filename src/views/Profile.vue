@@ -8,7 +8,7 @@
                     <i class="fas fa-edit"></i>
                     <input type="file" class="profile-input-img" @change="onUpdateProfileDataImage">
                 </label>
-                <label class="btn profile-get-url" v-if="authUser.uid == user_id" @click="is_displaying_url = true">
+                <label class="btn profile-get-url" @click="is_displaying_url = true">
                     <i class="fas fa-share-alt" ></i>
                 </label>
             </div>
@@ -70,7 +70,7 @@
             <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
             @mouseleave="is_showing_big_add=false"
             @click="is_displaying_add_content = true;add_new_card.creator_username = authUser.displayName;"
-            v-if="is_signed_in==true">
+            v-if="user_id == authUser.uid">
                 <h1 v-if="!is_showing_big_add" class="text-center">+</h1>
                 <h1 v-else class="text-center">ADD</h1>
             </div>
@@ -105,8 +105,8 @@
                     </div>
                     <div class="input-file-creator-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Share Link:</h3>
-                        <label class="overflow-auto py-1 w-50 border bg-white h4 text-primary border-warning rounded">
-                            zolphscape.com/profile/{{target_display_card_id}}/{{authUser.uid}}
+                        <label class="overflow-auto py-1 w-75 border bg-white h4 text-primary border-warning rounded">
+                            zolphscape.com/profile/{{target_display_card_id}}/{{user_id}}
                         </label>
                     </div>
                 </div>
@@ -240,6 +240,7 @@ export default {
                     this.target_display_description = card.description;
                     this.target_display_creator_username = card.creator_username;
                     this.is_displaying_card_content = true;
+                    this.target_display_card_id = card.id;
                 }
             });
         },
@@ -509,7 +510,7 @@ export default {
 
 .profile-image-edit {
     position: absolute;
-    top: 0px;
+    top: 25px;
     right: -34px;
     height: 34px;
     width: 34px;
@@ -517,7 +518,7 @@ export default {
 
 .profile-get-url {
     position: absolute;
-    top: 25px;
+    top: 0px;
     right: -34px;
     height: 34px;
     width: 34px;
