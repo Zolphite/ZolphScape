@@ -167,7 +167,7 @@
     <div class="url-display-bg" v-if="is_displaying_url == true">
         <div class="url-display text-center">
             <div class="url-display-delete" @click="is_displaying_url = false"><i class="far fa-times-circle"></i></div>
-            <h3 class="text-warning text-uppercase">Your URL is:</h3>
+            <h3 class="text-warning text-uppercase">Share URL for {{current_user_data.displayName}}</h3>
             <div class="url-link text-primary bg-gray px-2 border border-secondary">zolphscape.com/profile/{{ authUser.uid}}</div>
         </div>
     </div>
@@ -912,7 +912,7 @@ export default {
 }
 
 .url-display{
-    height: 100px;
+    height: auto;
     width: 500px;
     border-radius: 1rem;
     box-shadow: -1px 1px 8px 1px rgba(90, 84, 57, 0.6);
@@ -1016,7 +1016,7 @@ export default {
         width: 200px;
     }
     .url-display{
-        height: 100px;
+        /* height: 100px; */
         width: 300px;
         font-size: 16px;
     }

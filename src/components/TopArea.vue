@@ -15,6 +15,8 @@
         <div class="container-fluid" v-if="is_signed_in==true">
             <div class="row text-end">
                 <div class="col-12">
+                    <label class="text-capitalize text-primary px-4">{{authUser.displayName}}</label>
+                    <label class="text-white">|</label>
                     <a :href="'/profile/'+false+'/'+ this.authUser.uid" class="topbar-links px-4">My Profile</a>
                     <a class="topbar-links" @click="LogoutUser">Log out</a>
                 </div>
