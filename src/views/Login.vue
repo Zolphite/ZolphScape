@@ -12,11 +12,11 @@
                     <form class="login-form-actual my-3" @submit.prevent="loginButtonPressed">
                         <div class="login-form-group">
                             <label for="login-email" class="w-100">Email</label>
-                            <input type="email" name="login-email" placeholder="Email" v-model="login_form.email">
+                            <input type="email" name="login-email" placeholder="Email" v-model="login_form.email" required>
                         </div>
                         <div class="login-form-group">
                             <label for="login-password" class="w-100">Password</label>
-                            <input type="password" name="login-password" placeholder="Password" v-model="login_form.password">
+                            <input type="password" name="login-password" placeholder="Password" v-model="login_form.password" required>
                         </div>
                         <div class="login-form-group">
                             <button type="submit-login-form-actual" class="btn btn-warning">Login Now</button>
@@ -55,6 +55,8 @@ export default {
           .currentUser.getIdTokenResult()
           .then((tokenResult) => {
             console.log(tokenResult.claims);
+          }).catch(error => {
+            alert(error);
           });
       }
     });

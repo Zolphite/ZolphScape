@@ -130,14 +130,18 @@
                             <img v-if="add_new_card.image_path != null" class="input-img-display border border-2 border-warning" :src="'data:image/png;base64,'+add_new_card.image_path" alt="Upload Image">
                             <img v-else class="input-img-display border border-2 border-warning" src="../../static/assets/defaults/default_profile.png" alt="Upload Image">
                             <div class="w-100">
-                                <input type="file" id="input-img" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
+                                <form action="" id="input-img-form">
+                                    <input type="file" id="input-img" class="input-img" accept=".png, .jpeg, .jpg" @change="onAddImgSelected">
+                                </form>
                                 <label for="input-img" class="input-img-cont btn btn-primary">
                                     <i class="fas fa-image"></i> Upload Image
                                 </label>
                             </div>
                         </div>
                         <div class="col-md-6 d-flex my-3">
-                            <input type="file" id="input-content" class="input-file" accept=".html" @change="onAddCardSelected">
+                            <form action="" id="input-file-form">
+                                <input type="file" id="input-content" class="input-file" accept=".html" @change="onAddCardSelected">
+                            </form>
                             <label for="input-content" class="input-file-cont btn btn-primary align-middle">
                                 <i class="fas fa-upload"></i> Upload Content
                             </label>
@@ -297,6 +301,19 @@ export default {
             this.add_new_card.creator_id = this.authUser.uid;
             this.add_new_card.id = this.getNewRandomCardId();
             console.log(this.add_new_card);
+            if(this.add_new_card.title == null || this.add_new_card.description == null)
+            {
+                alert('Error Adding Card: Please make sure all fields are filled and the proper files are being displayed');
+                return;
+            }
+            let compareTitle = !this.add_new_card.title.trim().length;
+            let compareDesc = !this.add_new_card.description.trim().length;
+            if(this.add_new_card.plotly_html == null || this.add_new_card.image_path == null ||
+                compareTitle == true || compareDesc == true)
+            {
+                alert('Error Adding Card: Please make sure all fields are filled and the proper files are being displayed');
+                return;
+            }
             const new_card = Object.assign({}, this.add_new_card);
             this.card_data.push(new_card);
             this.target_add_display_frame_info = null;
@@ -382,6 +399,8 @@ export default {
             this.add_new_card.description = null;
             this.add_new_card.creator_username = null;
             this.add_new_card.id = null;
+            document.getElementById("input-img-form").reset();
+            document.getElementById("input-file-form").reset();
         },
         loadExploreCardsData()
         {

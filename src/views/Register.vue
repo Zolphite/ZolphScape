@@ -12,15 +12,15 @@
                     <form class="register-form-actual" @submit.prevent="RegisterNewUser">
                         <div class="register-form-group">
                             <label for="register-email" class="w-100">Email</label>
-                            <input type="email" name="register-email" placeholder="Email" v-model="register_form.email">
+                            <input type="email" name="register-email" placeholder="email" v-model="register_form.email" required>
                         </div>
                         <div class="register-form-group">
                             <label for="register-username" class="w-100">Username</label>
-                            <input type="username" name="register-username" placeholder="Username" v-model="register_form.username">
+                            <input type="username" name="register-username" placeholder="username" v-model="register_form.username" required>
                         </div>
                         <div class="register-form-group">
                             <label for="register-password" class="w-100">Password</label>
-                            <input type="password" name="register-password" placeholder="Password" v-model="register_form.password">
+                            <input type="password" name="register-password" placeholder="password" v-model="register_form.password" required>
                         </div>
                         <div class="register-form-group">
                             <button type="submit-register-form-actual" class="btn btn-warning">Register Now</button>
@@ -76,11 +76,12 @@ export default {
                     console.log('Save Worked');
                 }).catch(error => {
                     console.log('Save failed' + error);
-                })
+                });
                 this.$router.push("/");
             })
             .catch((error) => {
                 console.log('Error creating new user:', error);
+                alert(error);
             });
         }
     }
