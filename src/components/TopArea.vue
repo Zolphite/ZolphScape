@@ -126,7 +126,24 @@ export default {
     color: rgb(65, 65, 255);
     cursor: pointer;
 }
-
-
 /* End Navbar CSS */
+
+@media screen and (min-width: 1600px) {
+    .top-bar {
+        height: 4rem;
+        padding: .5rem 0;
+    }
+    .top-bar a {
+        font-size: 2rem!important;
+    }
+    .navbar-brand img {
+        height: 8rem!important;
+    }
+    .navbar {
+        font-size: 2.5rem;
+    }
+    label {
+        font-size: 2rem!important;
+    }
+}
 </style>

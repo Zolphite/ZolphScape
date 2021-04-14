@@ -3,7 +3,7 @@
     <footer>
         <div class="container bg-dark-custom">
             <div class="row text-light textcenter py-0 justify-content-center">
-                <div class="col-sm-10 col-md-8 col-lg-6 text-center">
+                <div class="col-sm-10 col-md-8 col-lg-6 text-center col-xl-12">
                     <img src="../assets/imgs/footer_logo.png" alt="">
                     <p>
                             ZolphScape is currently under development in a beta phase.
@@ -23,7 +23,7 @@
                             because it might get deleted.
                     </p>
                     <ul class="social pt-3">
-                        <li><a href="" class="fab fa-facebook"></a></li>
+                        <li><a href="" class="social-link fab fa-facebook "></a></li>
                         <li><a href="" class="fab fa-instagram"></a></li>
                         <li><a href="" class="fab fa-youtube"></a></li>
                         <li><a href="" class="fab fa-twitter"></a></li>
@@ -85,4 +85,16 @@ footer .svg-inline--fa:hover{
     background-color: #383838 !important;
 }
 /* End Footer */
+
+@media screen and (min-width: 1600px) {
+    footer img {
+        height: 5rem;
+    }
+    footer .svg-inline--fa{
+        font-size: 3rem;
+    }
+    ul.social { 
+        max-width: 22rem;
+    }
+}
 </style>

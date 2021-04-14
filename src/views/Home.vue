@@ -147,12 +147,12 @@
     <!-- Start Jumbotron -->
     <div class="jumbotro py-5 mb-0 bg-gray">
         <div class="container">
-            <div class="row">
-                <div class="col-md-7 col-lg-8 col-xl-9 my-auto">
+            <div class="row d-flex align-items-center">
+                <div class="col-md-7 col-lg-8 col-xl-9 my-auto jumbo-text">
                     <h4>Looking for talented front-end and back-end developers?</h4>
                 </div>
 
-                <div class="col-md-5 col-lg-4 col-xl-3">
+                <div class="col-md-5 col-lg-4 col-xl-3 h-100">
                     <a href="https://www.linkedin.com/in/abdullah-qureshi-5823b1200/" class="btn btn-warning btn-lg">Contact Us</a>
                 </div>
             </div>
@@ -290,6 +290,56 @@ export default {
 }
 
 /*============= MEDIA QUERIES =============*/
+
+@media screen and (min-width: 1600px) {
+    .home-carousel .carousel-item img {
+        max-height: 52rem !important;
+        width: 100%;
+    }
+    h1 {
+        font-size: 5rem!important;
+    }
+    h3 {
+        font-size: 3.5rem!important;
+    }
+    h4 {
+        font-size: 4.3rem!important;
+    }
+    .carousel-caption h1 {
+        font-size: 5rem;
+    }
+    .lead {
+        font-size: 2.5rem!important;
+    }
+    .btn-lg {
+        font-size: 2.2rem!important;    
+    }
+    .caption-btn{
+        font-size: 2rem!important;
+    }
+    .caption1 {
+        padding-top: 17%;
+    }
+    .caption2 {
+        padding-top: 14%;
+    }
+    .caption3 {
+        padding-top: 14%;
+    }
+    p {
+        font-size: 2rem!important;
+    }
+    .btn-md {
+        font-size: 2rem!important;
+    }
+    .extra-space {
+        padding: 5rem 0;
+        /* background: black; */
+    }
+    .fixed-background {
+        padding: 18rem 0;
+    }
+}
 
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {

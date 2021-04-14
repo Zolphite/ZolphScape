@@ -1,6 +1,7 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_cors import CORS
 import py_scripts.api_functions as api_functions
+import os
 
 app = Flask(__name__,
             static_folder="./dist/static",
@@ -19,6 +20,11 @@ def catch_all(path):
 # @app.route('/api/back_end')
 # def test():
 #     return {}
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'dist'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/api/covid_graph')
 def covid_graph():
