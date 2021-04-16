@@ -1,6 +1,6 @@
 <template>
     <section class="register-form mx-2">
-        <div class="container">
+        <div class="register container">
             <div class="row g-0 register-row">
                 <div class="col-lg-5">
                     <img src="../assets/imgs/carousel/0.jpg" class="" alt="">
@@ -12,18 +12,18 @@
                     <form class="register-form-actual" @submit.prevent="RegisterNewUser">
                         <div class="register-form-group">
                             <label for="register-email" class="w-100">Email</label>
-                            <input type="email" name="register-email" placeholder="email" v-model="register_form.email" required>
+                            <input class="xxl-inp" type="email" name="register-email" placeholder="email" v-model="register_form.email" required>
                         </div>
                         <div class="register-form-group">
                             <label for="register-username" class="w-100">Username</label>
-                            <input type="username" name="register-username" placeholder="username" v-model="register_form.username" required>
+                            <input class="xxl-inp" type="username" name="register-username" placeholder="username" v-model="register_form.username" required>
                         </div>
                         <div class="register-form-group">
                             <label for="register-password" class="w-100">Password</label>
-                            <input type="password" name="register-password" placeholder="password" v-model="register_form.password" required>
+                            <input class="xxl-inp" type="password" name="register-password" placeholder="password" v-model="register_form.password" required>
                         </div>
                         <div class="register-form-group">
-                            <button type="submit-register-form-actual" class="btn btn-warning">Register Now</button>
+                            <button type="submit-register-form-actual" class="register-btn btn btn-warning">Register Now</button>
                         </div>
                         <p>
                             Already have an account? 
@@ -122,5 +122,19 @@ export default {
 
 .register-side > h1 {
     font-weight: bold;
+}
+
+/* Devices under 1600px (4k) */
+@media screen and (min-width: 1600px) {
+    .register {
+        max-width: 150rem!important;
+    }
+    .xxl-inp {
+        font-size: 2rem!important;
+    }
+
+    .register-btn {
+        font-size: 1.8rem!important;
+    }
 }
 </style>

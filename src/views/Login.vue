@@ -12,14 +12,14 @@
                     <form class="login-form-actual my-3" @submit.prevent="loginButtonPressed">
                         <div class="login-form-group">
                             <label for="login-email" class="w-100">Email</label>
-                            <input type="email" name="login-email" placeholder="Email" v-model="login_form.email" required>
+                            <input class="xxl-inp" type="email" name="login-email" placeholder="Email" v-model="login_form.email" required>
                         </div>
                         <div class="login-form-group">
                             <label for="login-password" class="w-100">Password</label>
-                            <input type="password" name="login-password" placeholder="Password" v-model="login_form.password" required>
+                            <input class="xxl-inp" type="password" name="login-password" placeholder="Password" v-model="login_form.password" required>
                         </div>
                         <div class="login-form-group">
-                            <button type="submit-login-form-actual" class="btn btn-warning">Login Now</button>
+                            <button type="submit-login-form-actual" class="login-btn btn btn-warning">Login Now</button>
                         </div>
                         <p>
                             Don't have an account? 
@@ -82,7 +82,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .login-row {
     background: rgba(247, 247, 247, 0.877);
     border-radius: 1rem;
@@ -115,5 +115,20 @@ export default {
 
 .login-side > h1 {
     font-weight: bold;
+}
+
+/* Devices under 1600px (4k) */
+@media screen and (min-width: 1600px) {
+  .container{
+    max-width: 150rem!important;
+  }
+
+  .xxl-inp {
+    font-size: 2rem!important;
+  }
+
+  .login-btn {
+    font-size: 1.8rem!important;
+  }
 }
 </style>

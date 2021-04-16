@@ -14,10 +14,10 @@
                     <img v-else :src="'data:image/png;base64,'+item.profile_image" />
                 </div>
                 <div class="row mt-3">
-                    <div class="col-md-6 text-center">
+                    <div class="col-md-6 text-center xxl-text">
                         Created: 0
                     </div>
-                    <div class="col-md-6 text-center">
+                    <div class="col-md-6 text-center xxl-text">
                         Tracked: {{index}}
                     </div>
                 </div>
@@ -196,6 +196,21 @@ export default {
 }
 /* End of Content Card */
 
+/* Devices under 1600px (4k) */
+@media screen and (min-width: 1600px) {
+    .content-section {
+        grid-auto-rows: 850px ;
+    }
+    .content-card-display-img {
+        height: 300px;
+    }
+    .view-profile-btn {
+        font-size: 2rem!important;
+    }
+    .xxl-text{
+        font-size: 1.5rem!important;
+    }
+}
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
     /* .content-card-title {

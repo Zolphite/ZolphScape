@@ -51,6 +51,8 @@
         </div>
     </div>
     <!-- End Edit Description section -->
+
+    <!-- Start Content Section -->
     <div class="content-section">
         <div class="fa-3x text-warning content-loading-spinner" v-if="is_card_data_loaded == false">
             <i class="fas fa-spinner fa-pulse"></i>
@@ -67,7 +69,7 @@
             v-if="authUser.uid == user_id"><i class="far fa-times-circle"></i></div>
         </div>
         <div class="add-card-space">
-            <div class="content-add-card" @mouseenter="is_showing_big_add=true" 
+            <div class="content-add-card d-flex" @mouseenter="is_showing_big_add=true" 
             @mouseleave="is_showing_big_add=false"
             @click="is_displaying_add_content = true;add_new_card.creator_username = authUser.displayName;"
             v-if="user_id == authUser.uid">
@@ -76,7 +78,8 @@
             </div>
         </div>
     </div>
-
+    <!-- End Content Section -->
+    
     <!-- Start Card-Display -->
     <div class="card-display-shadow" v-if="is_displaying_card_content">
         <div class="card-display-delete" @click="is_displaying_card_content = false"><i class="far fa-times-circle"></i></div>
@@ -95,7 +98,7 @@
                     </div>
                     <div class="input-file-desc-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Description: </h3>
-                        <textarea readonly placeholder="No Description" v-model="target_display_description" class="py-1 w-75 border border-warning rounded text-center"></textarea>
+                        <textarea readonly placeholder="No Description" v-model="target_display_description" class="py-1 w-75 border border-warning rounded text-center desc-text"></textarea>
                     </div>
                     <div class="input-file-creator-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Creator:</h3>
@@ -117,7 +120,7 @@
     
     <!-- Start Add-Card-Display -->
     <div class="add-card-display-shadow" v-show="is_displaying_add_content">
-        <div class="card-display-delete" @click="is_displaying_add_content = false"><i class="far fa-times-circle"></i></div>
+        <div class="card-display-delete" @click="is_displaying_add_content = false;resetAddCardDisplay();"><i class="far fa-times-circle"></i></div>
         <div class="card-display-background" @click="is_displaying_card_content = false">
             <iframe class="card-display-frame" :srcdoc="target_add_display_frame_info" name="card-display"
             v-if="add_new_card.file_extention == 'html'"></iframe>
@@ -149,11 +152,11 @@
                     </div>
                     <div class="input-file-name-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Name: </h3>
-                        <input v-model="add_new_card.title" type="text" class="py-1 mx-3 border border-warning w-50 text-center rounded">
+                        <input v-model="add_new_card.title" type="text" class="py-1 mx-3 border border-warning w-50 text-center rounded name-text">
                     </div>
                     <div class="input-file-desc-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Description: </h3>
-                        <textarea v-model="add_new_card.description" class="py-1 w-50 border border-warning rounded"></textarea>
+                        <textarea v-model="add_new_card.description" class="py-1 w-50 border border-warning rounded desc-text"></textarea>
                     </div>
                     <div class="input-file-creator-cont w-100 text-center my-5">
                         <h3 class="w-100 my-3 text-white">Creator: </h3>
@@ -743,8 +746,7 @@ export default {
 .content-add-card:hover h1 {
     font-family: serif;
     font-size: 20px;
-    margin: 50% 0;
-    transform: translateY(-10px);
+    transform: translateY(2px);
     /* transform: scale(.3); */
 }
 /* End of End ADD Card Section */
@@ -870,12 +872,12 @@ export default {
     border: 1px solid #ccc;
     display: block;
     padding: 6px 12px;
-    width: 250px;
-    height: 40px;
+    width: 40%;
+    height: 13%;
 }
 .input-img-cont{
-    width: 150px;
-    height: 40px;
+    width: 40%;
+    height: 13%;
 }
 .input-img {
     margin: 10px;
@@ -1010,6 +1012,79 @@ export default {
     margin: 10px;
 }
 /* end saving Cards Spinner */
+
+/* Devices under 1600px (4k) */
+@media screen and (min-width: 1600px) {
+    .profile-image-cont {
+        height: 400px;
+        width: 450px;
+    }
+    .profile-image-edit {
+        top: 50px;
+    }
+    h5 {
+        font-size: 2.5rem!important;
+    }
+    .h4 {
+        font-size: 3rem!important;
+    }
+
+    .desc-text{
+        font-size: 1.8rem!important;
+    }
+    .name-text{
+        font-size: 2.2rem!important;
+    }    
+    .card-display-delete
+    {
+        font-size: 2.5rem!important;
+    }
+    .url-display-delete 
+    {
+        font-size: 2.5rem!important;
+    }
+    .url-link {
+        font-size: 2.4rem!important;
+    }
+    .content-card-bottom {
+        height: 80px;
+    }
+    .content-add-card {
+        height: 150px;
+        width: 150px;
+    }
+    .content-add-card h1 {
+        font-size: 60px;
+    }
+    .content-add-card:hover h1 {
+        font-size: 50px!important;
+    }
+    .input-img-display {
+        width: 450px;
+        height: 400px;
+    }
+    .input-file-cont {
+        width: 60%;
+    }
+    .input-img-cont {
+        width: 60%;
+    }
+    .add_card_button {
+        height: 66px;
+        width: 300px;
+        font-size: 38px!important;
+        margin-bottom: 100px;
+    }
+    .edit-desc{
+        width: 800px!important;
+        height: 550px!important;
+    }
+
+    .edit-desc textarea{
+        font-size: 2rem!important;
+    }
+}
+
 /* Devices under 1199px (xl) */
 @media (max-width: 1199.98px) {
     /* .content-card {
