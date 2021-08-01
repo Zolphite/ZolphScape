@@ -327,7 +327,7 @@ export default {
                 this.is_card_data_loaded = true;
                 console.log('Load failed' + error);
             })
-    },
+        },
     }
 }
 </script>

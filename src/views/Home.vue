@@ -119,7 +119,7 @@
                 <div class="col-12 text-center">
                     <h1>View a Random Card</h1>
                     <h3 class="py-4">..see what information is out there.</h3>
-                    <a href="#" class="btn btn-warning btn-lg mr-2">View Card</a>
+                    <a href="/explore" class="btn btn-warning btn-lg mr-2">View Card</a>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request, send_from_directory
 from flask_cors import CORS
 import py_scripts.api_functions as api_functions
 import os
+import requests
 
 app = Flask(__name__,
             static_folder="./dist/static",

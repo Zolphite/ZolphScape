@@ -1,4 +1,5 @@
 <template>
+    <img src="./assets/imgs/social_img.png" alt="ZolphScapeLogo" title="ZolphScapeLogo" class="meta_img">
     <top-area :is_signed_in="is_signed_in" :authUser="authUser"></top-area>
     <router-view :is_signed_in="is_signed_in" :authUser="authUser"/>
     <bottom-area></bottom-area>
@@ -66,6 +67,10 @@ export default {
     overflow-x: hidden;
     font-family: 'Montserrat', sans-serif;
     color: #4d5257;
+}
+
+.meta_img {
+    display: none;
 }
 
 /*============= TOP BAR HEADER =============*/
